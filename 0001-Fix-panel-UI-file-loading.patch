@@ -1,0 +1,25 @@
+From 73f48d4e296d131e2944b909bc961942fd5ac447 Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Tue, 14 Jun 2011 10:05:17 +0100
+Subject: [PATCH] Fix panel UI file loading
+
+---
+ src/panel/goapanel.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/panel/goapanel.c b/src/panel/goapanel.c
+index 005e6d4..9dfc0a3 100644
+--- a/src/panel/goapanel.c
++++ b/src/panel/goapanel.c
+@@ -104,7 +104,7 @@ goa_panel_init (GoaPanel *panel)
+   panel->builder = gtk_builder_new ();
+   error = NULL;
+   if (gtk_builder_add_from_file (panel->builder,
+-                                 PACKAGE_DATA_DIR "/goa/goapanel.ui",
++                                 PACKAGE_DATA_DIR "/gnome-online-accounts/goapanel.ui",
+                                  &error) == 0)
+     {
+       goa_warning ("Error loading UI file: %s (%s, %d)",
+-- 
+1.7.5.4
+

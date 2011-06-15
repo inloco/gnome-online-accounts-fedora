@@ -1,0 +1,25 @@
+From 8533fa59904527b942365f8c07984c332619ee7a Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Mon, 13 Jun 2011 18:36:13 +0100
+Subject: [PATCH] Fix .desktop file's validity
+
+---
+ data/goa-prefs.desktop.in |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/data/goa-prefs.desktop.in b/data/goa-prefs.desktop.in
+index 1a72c4f..78fe531 100644
+--- a/data/goa-prefs.desktop.in
++++ b/data/goa-prefs.desktop.in
+@@ -5,7 +5,7 @@ Icon=goa-panel
+ Exec=gnome-control-center goa
+ Terminal=false
+ Type=Application
+-Categories=Settings;X-GNOME-Settings-Panel;X-GNOME-PersonalSettings
++Categories=Settings;X-GNOME-Settings-Panel;X-GNOME-PersonalSettings;
+ StartupNotify=true
+ X-GNOME-Bugzilla-Bugzilla=GNOME
+ X-GNOME-Bugzilla-Product=goa
+-- 
+1.7.5.4
+
