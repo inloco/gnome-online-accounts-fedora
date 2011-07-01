@@ -10,11 +10,11 @@ Source0:	http://people.freedesktop.org/~david/%{name}-%{version}.tar.xz
 
 BuildRequires:	gtk3-devel glib2-devel
 BuildRequires:	gobject-introspection-devel
-BuildRequires:	gtk-doc
+BuildRequires:	gtk-doc intltool
 BuildRequires:	webkitgtk3-devel json-glib-devel libgnome-keyring-devel
 BuildRequires:	libnotify-devel rest-devel
 # For autoreconf, if needed
-# BuildRequires:	gnome-common automake autoconf libtool intltool
+# BuildRequires:	gnome-common automake autoconf libtool
 
 %description
 gnome-online-accounts provides interfaces so applications and 
