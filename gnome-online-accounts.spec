@@ -42,6 +42,8 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
 
+%find_lang %{name}
+
 %post
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -56,7 +58,7 @@ fi
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%files
+%files -f %{name}.lang
 %doc NEWS COPYING
 %{_libdir}/girepository-1.0/Goa-1.0.typelib
 %{_libdir}/libgoa-1.0.so.0
@@ -66,6 +68,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_prefix}/libexec/goa-daemon
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
+%{_datadir}/man/man8/goa-daemon.8.gz
 
 %files devel
 %{_includedir}/goa-1.0/
