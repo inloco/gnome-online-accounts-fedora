@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.1.1
+Version:	3.1.90
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		http://people.freedesktop.org/~david/gnome-online-accounts-3.1.0/
-Source0:	http://people.freedesktop.org/~david/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.1/%{name}-%{version}.tar.xz
 
 BuildRequires:	gtk3-devel glib2-devel
 BuildRequires:	gobject-introspection-devel
@@ -17,7 +17,7 @@ BuildRequires:	libnotify-devel rest-devel
 # BuildRequires:	gnome-common automake autoconf libtool
 
 %description
-gnome-online-accounts provides interfaces so applications and 
+gnome-online-accounts provides interfaces so applications and
 libraries in GNOME can access the user's online accounts.
 
 %package devel
@@ -42,6 +42,8 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
 
+%find_lang %{name}
+
 %post
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -56,8 +58,7 @@ fi
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%files
-%defattr(-,root,root,-)
+%files -f %{name}.lang
 %doc NEWS COPYING
 %{_libdir}/girepository-1.0/Goa-1.0.typelib
 %{_libdir}/libgoa-1.0.so.0
@@ -67,10 +68,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_prefix}/libexec/goa-daemon
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
-%{_mandir}/man8/goa-daemon.8.gz
+%{_datadir}/man/man8/goa-daemon.8.gz
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/goa-1.0/
 %{_libdir}/libgoa-1.0.so
 %{_libdir}/libgoa-backend-1.0.so
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Aug 30 2011 Matthias Clasen <mclasen@redhat.com> - 3.1.90-1
+- Update to 3.1.90
+
 * Fri Jul 01 2011 Bastien Nocera <bnocera@redhat.com> 3.1.1-1
 - Update to 3.1.1
 
