@@ -66,7 +66,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_prefix}/libexec/goa-daemon
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
-%{_mandir}/man8/goa-daemon.8.gz
 
 %files devel
 %{_includedir}/goa-1.0/
