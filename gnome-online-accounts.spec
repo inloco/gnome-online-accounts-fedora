@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.1.90
+Version:	3.1.91
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Sep 20 2011 Matthias Clasen <mclasen@redhat.com> - 3.1.91-1
+- Update to 3.1.91
+
 * Tue Aug 30 2011 Matthias Clasen <mclasen@redhat.com> - 3.1.90-1
 - Update to 3.1.90
 
