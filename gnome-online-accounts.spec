@@ -83,6 +83,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 * Mon Sep 26 2011 Ray <rstrode@redhat.com> - 3.2.0-1
 - Update to 3.2.0
 
+* Mon Sep 26 2011 Ray <rstrode@redhat.com> - 3.2.0-1
+- Update to 3.2.0
+
 * Tue Sep 20 2011 Matthias Clasen <mclasen@redhat.com> - 3.1.91-1
 - Update to 3.1.91
 
