@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.2.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.2.1-2
+- Rebuilt for glibc bug#747377
+
 * Tue Oct 18 2011 Matthias Clasen <mclasen@redhat.com> - 3.2.1-1
 - Update to 3.2.1
 
