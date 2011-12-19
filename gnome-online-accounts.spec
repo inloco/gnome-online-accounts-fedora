@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.2.1
-Release:	2%{?dist}
+Version:	3.3.0
+Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		http://people.freedesktop.org/~david/gnome-online-accounts-3.1.0/
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.2/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.3/%{name}-%{version}.tar.xz
 
 BuildRequires:	gtk3-devel glib2-devel
 BuildRequires:	gobject-introspection-devel
@@ -80,6 +80,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Dec 19 2011 Brian Pepple <bpepple@fedoraproject.org> - 3.3.0-1
+- Update to 3.3.0.
+- Update source url.
+
 * Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.2.1-2
 - Rebuilt for glibc bug#747377
 
