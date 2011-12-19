@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.3.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -35,7 +35,7 @@ files for developing applications that use gnome-online-accounts.
 %setup -q
 
 %build
-%configure --disable-static --enable-gtk-doc
+%configure --disable-static --enable-gtk-doc --enable-windows-live
 make %{?_smp_mflags}
 
 %install
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Dec 19 2011 Brian Pepple <bpepple@fedoraproject.org> - 3.3.0-2
+- Enable Windows Live provider.
+
 * Mon Dec 19 2011 Brian Pepple <bpepple@fedoraproject.org> - 3.3.0-1
 - Update to 3.3.0.
 - Update source url.
