@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.3.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Mon Dec 19 2011 Brian Pepple <bpepple@fedoraproject.org> - 3.3.0-2
 - Enable Windows Live provider.
 
