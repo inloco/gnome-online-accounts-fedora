@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.3.92.1
+Version:	3.4.0
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
-URL:		http://people.freedesktop.org/~david/gnome-online-accounts-3.1.0/
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.3/%{name}-%{version}.tar.xz
+URL:		https://live.gnome.org/OnlineAccounts
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.4/%{name}-%{version}.tar.xz
 
 BuildRequires:	gtk3-devel glib2-devel
 BuildRequires:	gobject-introspection-devel
@@ -80,6 +80,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Mar 26 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.4.0-1
+- Update to 3.4.0
+
 * Wed Mar 21 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.3.92.1-1
 - Update to 3.3.92.1
 
