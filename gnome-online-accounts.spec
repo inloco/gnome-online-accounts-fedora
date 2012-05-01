@@ -1,20 +1,24 @@
 Name:		gnome-online-accounts
-Version:	3.4.1
+Version:	3.5.1
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.4/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.5/%{name}-%{version}.tar.xz
 
-BuildRequires:	gtk3-devel glib2-devel
+BuildRequires:	glib2-devel >= 2.32
+BuildRequires:	gtk3-devel
 BuildRequires:	gobject-introspection-devel
-BuildRequires:	gtk-doc intltool
-BuildRequires:	webkitgtk3-devel json-glib-devel libgnome-keyring-devel
-BuildRequires:	libnotify-devel rest-devel
-# For autoreconf, if needed
-# BuildRequires:	gnome-common automake autoconf libtool
+BuildRequires:	gtk-doc
+BuildRequires:	intltool
+BuildRequires:	webkitgtk3-devel
+BuildRequires:	json-glib-devel
+BuildRequires:	libgnome-keyring-devel
+BuildRequires:	libnotify-devel
+BuildRequires:	rest-devel
+BuildRequires:	libxml2-devel
 
 %description
 gnome-online-accounts provides interfaces so applications and
@@ -35,7 +39,12 @@ files for developing applications that use gnome-online-accounts.
 %setup -q
 
 %build
-%configure --disable-static --enable-gtk-doc --enable-facebook --enable-windows-live
+%configure \
+  --disable-static \
+  --enable-gtk-doc \
+  --enable-exchange \
+  --enable-facebook \
+  --enable-windows-live
 make %{?_smp_mflags}
 
 %install
@@ -69,6 +78,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
+%{_datadir}/%{name}/%{name}.css
 
 %files devel
 %{_includedir}/goa-1.0/
@@ -80,6 +90,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Wed May 02 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.1-1
+- Update to 3.5.1
+
 * Tue Apr 17 2012 Richard Hughes <hughsient@gmail.com> - 3.4.1-1
 - Update to 3.4.1
 
