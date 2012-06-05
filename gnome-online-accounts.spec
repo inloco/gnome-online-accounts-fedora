@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.5.1
+Version:	3.5.2
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -9,7 +9,7 @@ URL:		https://live.gnome.org/OnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.5/%{name}-%{version}.tar.xz
 
 BuildRequires:	glib2-devel >= 2.32
-BuildRequires:	gtk3-devel
+BuildRequires:	gtk3-devel >= 3.5.1
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
@@ -17,6 +17,7 @@ BuildRequires:	webkitgtk3-devel
 BuildRequires:	json-glib-devel
 BuildRequires:	libgnome-keyring-devel
 BuildRequires:	libnotify-devel
+BuildRequires:	libsoup-devel >= 2.38
 BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
 
@@ -78,7 +79,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
-%{_datadir}/%{name}/%{name}.css
 
 %files devel
 %{_includedir}/goa-1.0/
@@ -90,6 +90,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Jun 05 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.2-1
+- Update to 3.5.2
+
 * Wed May 02 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.1-1
 - Update to 3.5.1
 
