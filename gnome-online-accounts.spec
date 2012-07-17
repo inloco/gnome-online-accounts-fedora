@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.5.3
+Version:	3.5.4
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -15,7 +15,7 @@ BuildRequires:	gtk-doc
 BuildRequires:	intltool
 BuildRequires:	webkitgtk3-devel
 BuildRequires:	json-glib-devel
-BuildRequires:	libgnome-keyring-devel
+BuildRequires:	libsecret-devel >= 0.7
 BuildRequires:	libnotify-devel
 BuildRequires:	libsoup-devel >= 2.38
 BuildRequires:	rest-devel
@@ -90,6 +90,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Jul 16 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.4-1
+- Update to 3.5.4
+
 * Mon Jun 25 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.3-1
 - Update to 3.5.3
 
