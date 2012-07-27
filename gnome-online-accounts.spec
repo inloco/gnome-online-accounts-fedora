@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.5.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -90,6 +90,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Fri Jul 27 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.5.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Mon Jul 16 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.4-1
 - Update to 3.5.4
 
