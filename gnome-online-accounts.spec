@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.5.5
+Version:	3.5.90
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -8,11 +8,13 @@ License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.5/%{name}-%{version}.tar.xz
 
+BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.32
 BuildRequires:	gtk3-devel >= 3.5.1
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
+BuildRequires:	krb5-devel
 BuildRequires:	webkitgtk3-devel
 BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
@@ -45,6 +47,7 @@ files for developing applications that use gnome-online-accounts.
   --enable-gtk-doc \
   --enable-exchange \
   --enable-facebook \
+  --enable-kerberos \
   --enable-windows-live
 make %{?_smp_mflags}
 
@@ -90,6 +93,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Aug 21 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.90-1
+- Update to 3.5.90
+
 * Tue Aug 07 2012 Richard Hughes <hughsient@gmail.com> - 3.5.5-1
 - Update to 3.5.5
 
