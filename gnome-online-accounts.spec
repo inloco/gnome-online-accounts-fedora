@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.6.0
+Version:	3.6.1
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -82,6 +82,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
+%{_datadir}/%{name}/goawebview.css
 
 %files devel
 %{_includedir}/goa-1.0/
@@ -93,6 +94,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Oct 15 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.1-1
+- Update to 3.6.1
+
 * Tue Sep 25 2012 Matthias Clasen <mclasen@redhat.com> - 3.6.0-1
 - Update to 3.6.0
 
