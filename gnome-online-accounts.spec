@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.5.90
+Version:	3.6.1
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.5/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.6/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.32
@@ -82,6 +82,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
+%{_datadir}/%{name}/goawebview.css
 
 %files devel
 %{_includedir}/goa-1.0/
@@ -93,6 +94,18 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Oct 15 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.1-1
+- Update to 3.6.1
+
+* Tue Sep 25 2012 Matthias Clasen <mclasen@redhat.com> - 3.6.0-1
+- Update to 3.6.0
+
+* Mon Sep 17 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.92-1
+- Update to 3.5.92
+
+* Tue Sep 04 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.91-1
+- Update to 3.5.91
+
 * Tue Aug 21 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.5.90-1
 - Update to 3.5.90
 
