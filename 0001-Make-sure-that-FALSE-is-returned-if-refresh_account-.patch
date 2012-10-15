@@ -1,0 +1,40 @@
+From 1a766f0c076bfee87006c6176351522e7c72961f Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Fri, 5 Oct 2012 16:44:00 +0200
+Subject: [PATCH] Make sure that FALSE is returned if refresh_account failed
+
+Fixes: https://bugzilla.gnome.org/660932
+---
+ src/goabackend/goaoauth2provider.c | 2 ++
+ src/goabackend/goaoauthprovider.c  | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 566fd6c..bf597aa 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -1223,6 +1223,8 @@ goa_oauth2_provider_refresh_account (GoaProvider  *_provider,
+   refresh_token = NULL;
+   identity = NULL;
+ 
++  ret = FALSE;
++
+   dialog = gtk_dialog_new_with_buttons (NULL,
+                                         parent,
+                                         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+diff --git a/src/goabackend/goaoauthprovider.c b/src/goabackend/goaoauthprovider.c
+index d97be8e..ae30f83 100644
+--- a/src/goabackend/goaoauthprovider.c
++++ b/src/goabackend/goaoauthprovider.c
+@@ -1233,6 +1233,8 @@ goa_oauth_provider_refresh_account (GoaProvider  *_provider,
+   session_handle = NULL;
+   identity = NULL;
+ 
++  ret = FALSE;
++
+   dialog = gtk_dialog_new_with_buttons (NULL,
+                                         parent,
+                                         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+-- 
+1.7.12.1
+

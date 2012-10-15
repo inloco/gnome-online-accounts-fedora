@@ -1,12 +1,15 @@
 Name:		gnome-online-accounts
 Version:	3.4.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.4/%{name}-%{version}.tar.xz
+
+# https://bugzilla.gnome.org/660932 , https://bugzilla.redhat.com/863419
+Patch0:		0001-Make-sure-that-FALSE-is-returned-if-refresh_account-.patch
 
 BuildRequires:	gtk3-devel glib2-devel
 BuildRequires:	gobject-introspection-devel
@@ -33,6 +36,7 @@ files for developing applications that use gnome-online-accounts.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure --disable-static --enable-gtk-doc --enable-facebook --enable-windows-live
@@ -80,6 +84,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Mon Oct 15 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.4.2-2
+- Backport fix for RH #863419
+
 * Mon May 14 2012 Richard Hughes <hughsient@gmail.com> - 3.4.2-1
 - Update to 3.4.2
 
