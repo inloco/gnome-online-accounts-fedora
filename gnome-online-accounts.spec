@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.6.1
+Version:	3.7.1
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.6/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.7/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.32
@@ -48,6 +48,7 @@ files for developing applications that use gnome-online-accounts.
   --enable-exchange \
   --enable-facebook \
   --enable-kerberos \
+  --enable-owncloud \
   --enable-windows-live
 make %{?_smp_mflags}
 
@@ -93,7 +94,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/pkgconfig/goa-backend-1.0.pc
 %{_datadir}/gtk-doc/html/goa/
 
+%dir %{_libdir}/goa-1.0
+%{_libdir}/goa-1.0/include
+
 %changelog
+* Tue Oct 23 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.7.1-1
+- Update to 3.7.1
+
 * Mon Oct 15 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.1-1
 - Update to 3.6.1
 
