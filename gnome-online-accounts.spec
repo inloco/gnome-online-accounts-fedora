@@ -1,17 +1,13 @@
-%global snapshot .20121107git
-
 Name:		gnome-online-accounts
-Version:	3.6.1
-Release:	2%{?snapshot}%{?dist}
+Version:	3.6.2
+Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
 
-# git://git.gnome.org/gnome-online-accounts
-Source0:	%{name}-%{version}%{?snapshot}.tar.bz2
-#Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.6/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.6/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.32
@@ -44,7 +40,7 @@ The gnome-online-accounts-devel package contains libraries and header
 files for developing applications that use gnome-online-accounts.
 
 %prep
-%setup -q -n %{name}-3.6.2 # upstream uses post-release version bumps
+%setup -q
 
 %build
 %configure \
@@ -99,6 +95,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Nov 13 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.2-1
+- Update to 3.6.2
+
 * Wed Nov 07 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.1-2.20121107git
 - Update to Git snapshot cf5de46 from gnome-3-6 for the GNOME 3.6 Test Day:
   http://fedoraproject.org/wiki/Test_Day:2012-11-08_GNOME_3.6
