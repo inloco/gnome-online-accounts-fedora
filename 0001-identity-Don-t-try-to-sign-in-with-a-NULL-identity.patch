@@ -1,0 +1,25 @@
+From e2286c0a75a9e76557e71061b1b10fd3acf1170f Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Tue, 8 Jan 2013 16:48:17 +0100
+Subject: [PATCH 1/2] identity: Don't try to sign in with a NULL identity
+
+---
+ src/goaidentity/goakerberosidentitymanager.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/goaidentity/goakerberosidentitymanager.c b/src/goaidentity/goakerberosidentitymanager.c
+index 3b7f6c6..d90fb9d 100644
+--- a/src/goaidentity/goakerberosidentitymanager.c
++++ b/src/goaidentity/goakerberosidentitymanager.c
+@@ -822,7 +822,7 @@ sign_in_identity (GoaKerberosIdentityManager *self,
+                                            GOA_IDENTITY_MANAGER_ERROR_CREATING_IDENTITY,
+                                            _("Could not create credential cache for identity"));
+           g_simple_async_result_set_op_res_gpointer (operation->result, NULL, NULL);
+-
++          return;
+         }
+       else
+         {
+-- 
+1.8.0.2
+

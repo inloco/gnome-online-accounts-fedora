@@ -1,0 +1,45 @@
+From 3e98fb8e88f12a47a1df2a4c22938c4f4c0edfd0 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Tue, 8 Jan 2013 17:27:20 +0100
+Subject: [PATCH 2/2] identity: Don't leak the GoaKerberosIdentity
+
+Fixes: https://bugzilla.gnome.org/691142
+---
+ src/goaidentity/goakerberosidentitymanager.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/goaidentity/goakerberosidentitymanager.c b/src/goaidentity/goakerberosidentitymanager.c
+index d90fb9d..62c4a2a 100644
+--- a/src/goaidentity/goakerberosidentitymanager.c
++++ b/src/goaidentity/goakerberosidentitymanager.c
+@@ -555,6 +555,7 @@ refresh_identities (GoaKerberosIdentityManager *self,
+       if (identity != NULL)
+         {
+           refresh_identity (self, operation, refreshed_identities, identity);
++          g_object_unref (identity);
+         }
+ 
+       krb5_cc_close (self->priv->kerberos_context, cache);
+@@ -840,6 +841,10 @@ sign_in_identity (GoaKerberosIdentityManager *self,
+             }
+         }
+     }
++  else
++    {
++      g_object_ref (identity);
++    }
+ 
+   g_hash_table_replace (self->priv->identities,
+                         g_strdup (operation->identifier),
+@@ -869,6 +874,8 @@ sign_in_identity (GoaKerberosIdentityManager *self,
+                                                  (GDestroyNotify)
+                                                  g_object_unref);
+     }
++
++  g_object_unref (identity);
+ }
+ 
+ static void
+-- 
+1.8.0.2
+

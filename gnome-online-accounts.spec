@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.6.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -8,6 +8,8 @@ License:	LGPLv2+
 URL:		https://live.gnome.org/OnlineAccounts
 
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.6/%{name}-%{version}.tar.xz
+Patch0:		0001-identity-Don-t-try-to-sign-in-with-a-NULL-identity.patch
+Patch1:		0002-identity-Don-t-leak-the-GoaKerberosIdentity.patch
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.32
@@ -41,6 +43,8 @@ files for developing applications that use gnome-online-accounts.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
@@ -95,6 +99,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/gtk-doc/html/goa/
 
 %changelog
+* Tue Jan 08 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.6.2-2
+- Do not leak timer FDs (GNOME #691142)
+
 * Tue Nov 13 2012 Debarshi Ray <rishi@fedoraproject.org> - 3.6.2-1
 - Update to 3.6.2
 
