@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.7.3
+Version:	3.7.4
 Release:	1%{?dist}
 Summary:	Provide online accounts information
 
@@ -9,7 +9,7 @@ URL:		https://live.gnome.org/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.7/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
-BuildRequires:	glib2-devel >= 2.32
+BuildRequires:	glib2-devel >= 2.35
 BuildRequires:	gtk3-devel >= 3.5.1
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
@@ -19,7 +19,7 @@ BuildRequires:	webkitgtk3-devel
 BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
 BuildRequires:	libnotify-devel
-BuildRequires:	libsoup-devel >= 2.38
+BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
 
@@ -98,6 +98,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Mon Jan 14 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.4-1
+- Update to 3.7.4
+
 * Thu Jan 03 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.3-1
 - Update to 3.7.3
 
