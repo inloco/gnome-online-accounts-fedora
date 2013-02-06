@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.7.4
-Release:	2%{?dist}
+Version:	3.7.5
+Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -8,6 +8,7 @@ License:	LGPLv2+
 URL:		https://live.gnome.org/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.7/%{name}-%{version}.tar.xz
 
+BuildRequires:	desktop-file-utils
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
 BuildRequires:	gtk3-devel >= 3.5.1
@@ -47,6 +48,7 @@ files for developing applications that use gnome-online-accounts.
   --enable-gtk-doc \
   --enable-exchange \
   --enable-facebook \
+  --enable-google \
   --enable-kerberos \
   --enable-owncloud \
   --enable-windows-live
@@ -56,14 +58,18 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
 
+desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/goa-daemon.desktop
+
 %find_lang %{name}
 
 %post
 /sbin/ldconfig
+/usr/bin/update-desktop-database &> /dev/null || :
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
 %postun
 /sbin/ldconfig
+/usr/bin/update-desktop-database &> /dev/null || :
 if [ $1 -eq 0 ] ; then
   touch --no-create %{_datadir}/icons/hicolor &>/dev/null
   gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
@@ -80,6 +86,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/libgoa-backend-1.0.so.0
 %{_libdir}/libgoa-backend-1.0.so.0.0.0
 %{_prefix}/libexec/goa-daemon
+%{_datadir}/applications/goa-daemon.desktop
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
@@ -98,6 +105,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed Feb 06 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.5-1
+- Update to 3.7.5
+
 * Wed Feb 06 2013 Kalev Lember <kalevlember@gmail.com> - 3.7.4-2
 - Rebuilt for libgcr soname bump
 
