@@ -1,0 +1,49 @@
+From 5a3d3862b0765385f38ca1ba2a9e2e74eb0d111d Mon Sep 17 00:00:00 2001
+From: Simon McVittie <simon.mcvittie@collabora.co.uk>
+Date: Tue, 05 Feb 2013 13:43:34 +0000
+Subject: CVE-2013-0240: Do not allow invalid SSL certificates
+
+None of the branded providers (eg., Google, Facebook and Windows Live)
+should ever have an invalid certificate; and in this version of GOA,
+that's all we have. So set "ssl-strict" on the SoupSession object
+being used by GoaWebView.
+
+Reviewed-by: Debarshi Ray <debarshir@gnome.org>
+Bug: https://bugzilla.gnome.org/show_bug.cgi?id=693214
+---
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 2cf2e54..5645ead 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -747,6 +747,12 @@ get_tokens_and_identity (GoaOAuth2Provider  *provider,
+       SoupCookieJar *cookie_jar;
+ 
+       webkit_soup_session = webkit_get_default_session ();
++
++      g_object_set (webkit_soup_session,
++          SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
++          SOUP_SESSION_SSL_STRICT, TRUE,
++          NULL);
++
+       /* Get the proxy configuration from the GNOME settings */
+       soup_session_add_feature_by_type (webkit_soup_session, SOUP_TYPE_PROXY_RESOLVER_GNOME);
+       /* Set the Accept-Language header automatically */
+diff --git a/src/goabackend/goaoauthprovider.c b/src/goabackend/goaoauthprovider.c
+index 1dbd5a1..5d76f02 100644
+--- a/src/goabackend/goaoauthprovider.c
++++ b/src/goabackend/goaoauthprovider.c
+@@ -708,6 +708,12 @@ get_tokens_and_identity (GoaOAuthProvider *provider,
+       SoupCookieJar *cookie_jar;
+ 
+       webkit_soup_session = webkit_get_default_session ();
++
++      g_object_set (webkit_soup_session,
++          SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
++          SOUP_SESSION_SSL_STRICT, TRUE,
++          NULL);
++
+       /* Get the proxy configuration from the GNOME settings */
+       soup_session_add_feature_by_type (webkit_soup_session, SOUP_TYPE_PROXY_RESOLVER_GNOME);
+ 
+--
+cgit v0.9.0.2
