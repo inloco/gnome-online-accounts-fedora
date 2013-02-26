@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.7.90
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -49,6 +49,7 @@ files for developing applications that use gnome-online-accounts.
   --enable-exchange \
   --enable-facebook \
   --enable-google \
+  --enable-imap-smtp \
   --enable-kerberos \
   --enable-owncloud \
   --enable-windows-live
@@ -105,6 +106,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Feb 26 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.90-2
+- Enable IMAP / SMTP
+
 * Fri Feb 22 2013 Kalev Lember <kalevlember@gmail.com> - 3.7.90-1
 - Update to 3.7.90
 
