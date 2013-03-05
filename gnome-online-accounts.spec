@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.7.90
-Release:	2%{?dist}
+Version:	3.7.91
+Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -106,6 +106,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Mar 05 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.91-1
+- Update to 3.7.91
+
 * Tue Feb 26 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.7.90-2
 - Enable IMAP / SMTP
 
