@@ -8,7 +8,6 @@ License:	LGPLv2+
 URL:		https://live.gnome.org/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.7/%{name}-%{version}.tar.xz
 
-BuildRequires:	desktop-file-utils
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
 BuildRequires:	gtk3-devel >= 3.5.1
@@ -19,7 +18,6 @@ BuildRequires:	krb5-devel
 BuildRequires:	webkitgtk3-devel
 BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
-BuildRequires:	libnotify-devel
 BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
@@ -59,18 +57,14 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
 
-desktop-file-validate $RPM_BUILD_ROOT%{_datadir}/applications/goa-daemon.desktop
-
 %find_lang %{name}
 
 %post
 /sbin/ldconfig
-/usr/bin/update-desktop-database &> /dev/null || :
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
 %postun
 /sbin/ldconfig
-/usr/bin/update-desktop-database &> /dev/null || :
 if [ $1 -eq 0 ] ; then
   touch --no-create %{_datadir}/icons/hicolor &>/dev/null
   gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
@@ -87,7 +81,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/libgoa-backend-1.0.so.0
 %{_libdir}/libgoa-backend-1.0.so.0.0.0
 %{_prefix}/libexec/goa-daemon
-%{_datadir}/applications/goa-daemon.desktop
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
