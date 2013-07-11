@@ -1,7 +1,7 @@
 Name:		gnome-online-accounts
-Version:	3.9.2
+Version:	3.9.4
 Release:	1%{?dist}
-Summary:	Provide online accounts information
+Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
@@ -23,8 +23,9 @@ BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
 
 %description
-gnome-online-accounts provides interfaces so applications and
-libraries in GNOME can access the user's online accounts.
+GNOME Online Accounts provides interfaces so that applications and libraries
+in GNOME can access the user's online accounts. It has providers for Google,
+ownCloud, Facebook, Flickr, Windows Live, Microsoft Exchange and Kerberos.
 
 %package devel
 Summary:	Development files for %{name}
@@ -34,8 +35,8 @@ Requires:	pkgconfig
 Requires:	gobject-introspection-devel
 
 %description devel
-The gnome-online-accounts-devel package contains libraries and header
-files for developing applications that use gnome-online-accounts.
+The %{name}-devel package contains libraries and header files for
+developing applications that use %{name}.
 
 %prep
 %setup -q
@@ -46,6 +47,7 @@ files for developing applications that use gnome-online-accounts.
   --enable-gtk-doc \
   --enable-exchange \
   --enable-facebook \
+  --enable-flickr \
   --enable-google \
   --enable-imap-smtp \
   --enable-kerberos \
@@ -99,6 +101,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Thu Jul 11 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.9.4-1
+- Update to 3.9.4
+- Update summary and description to match upstream DOAP file
+
 * Sun Jun 02 2013 Kalev Lember <kalevlember@gmail.com> - 3.9.2-1
 - Update to 3.9.2
 
