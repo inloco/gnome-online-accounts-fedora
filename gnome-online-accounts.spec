@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.9.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -101,6 +101,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.9.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu Jul 11 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.9.4-1
 - Update to 3.9.4
 - Update summary and description to match upstream DOAP file
