@@ -20,6 +20,7 @@ BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
 BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
+BuildRequires:	telepathy-glib-devel
 BuildRequires:	libxml2-devel
 
 %description
