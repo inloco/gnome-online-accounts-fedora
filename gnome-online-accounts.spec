@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.9.4
-Release:	2%{?dist}
+Version:	3.9.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -52,6 +52,7 @@ developing applications that use %{name}.
   --enable-imap-smtp \
   --enable-kerberos \
   --enable-owncloud \
+  --enable-telepathy \
   --enable-windows-live
 make %{?_smp_mflags}
 
@@ -60,6 +61,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
 
 %find_lang %{name}
+%find_lang %{name}-tpaw
 
 %post
 /sbin/ldconfig
@@ -68,25 +70,33 @@ touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 %postun
 /sbin/ldconfig
 if [ $1 -eq 0 ] ; then
+    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
   touch --no-create %{_datadir}/icons/hicolor &>/dev/null
   gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
 
 %posttrans
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%files -f %{name}.lang
+%files -f %{name}.lang -f %{name}-tpaw.lang
 %doc NEWS COPYING
 %{_libdir}/girepository-1.0/Goa-1.0.typelib
 %{_libdir}/libgoa-1.0.so.0
 %{_libdir}/libgoa-1.0.so.0.0.0
-%{_libdir}/libgoa-backend-1.0.so.0
-%{_libdir}/libgoa-backend-1.0.so.0.0.0
+%{_libdir}/libgoa-backend-1.0.so.1
+%{_libdir}/libgoa-backend-1.0.so.1.0.0
 %{_prefix}/libexec/goa-daemon
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
+%{_datadir}/glib-2.0/schemas/org.gnome.telepathy-account-widgets.gschema.xml
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
+%{_datadir}/icons/hicolor/*/apps/im-*.png
+%{_datadir}/icons/hicolor/*/apps/im-*.svg
 %{_datadir}/man/man8/goa-daemon.8.gz
+
+%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/goawebview.css
+%{_datadir}/%{name}/irc-networks.xml
 
 %files devel
 %{_includedir}/goa-1.0/
@@ -101,6 +111,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Thu Aug 22 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.9.90-1
+- Update to 3.9.90
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.9.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
