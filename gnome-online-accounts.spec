@@ -1,12 +1,13 @@
 Name:		gnome-online-accounts
 Version:	3.9.90
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.9/%{name}-%{version}.tar.xz
+Patch0:		0001-Update-to-new-webkitgtk-2.1.90-API.patch
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
@@ -41,6 +42,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
+%patch0 -p1 -b .webkitgtk-2.1.90
 
 %build
 %configure \
@@ -112,6 +114,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Thu Aug 29 2013 Kalev Lember <kalevlember@gmail.com> - 3.9.90-2
+- Update to new webkitgtk-2.1.90 API
+
 * Thu Aug 22 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.9.90-1
 - Update to 3.9.90
 
