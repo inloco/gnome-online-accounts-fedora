@@ -10,19 +10,6 @@ Fixes: https://bugzilla.gnome.org/707006
  src/goabackend/goagoogleprovider.c | 6 +++---
  3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index bb7bb11..436a96a 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -91,7 +91,7 @@ PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.5.1])
- AC_SUBST(GTK_CFLAGS)
- AC_SUBST(GTK_LIBS)
- 
--PKG_CHECK_MODULES(WEBKIT_GTK, [webkitgtk-3.0])
-+PKG_CHECK_MODULES(WEBKIT_GTK, [webkitgtk-3.0 >= 2.1.90])
- AC_SUBST(WEBKIT_GTK_CFLAGS)
- AC_SUBST(WEBKIT_GTK_LIBS)
- 
 diff --git a/src/goabackend/goaflickrprovider.c b/src/goabackend/goaflickrprovider.c
 index 66396ba..7505482 100644
 --- a/src/goabackend/goaflickrprovider.c
