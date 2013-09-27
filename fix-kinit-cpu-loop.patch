@@ -1,0 +1,95 @@
+From 300a9ed2392c34c349cb6fa71370fb305625aa07 Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Fri, 20 Sep 2013 13:45:02 -0400
+Subject: [PATCH] goaidentity: use proper main context
+
+The previous commit uses the wrong main context, which ultimately
+leads symptoms including crashes and 100% cpu usage.
+
+This commit just tweaks the previous commit a little bit, to use
+the proper context.
+---
+ src/goaidentity/goaalarm.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/src/goaidentity/goaalarm.c b/src/goaidentity/goaalarm.c
+index ae749f7..e9b904b 100644
+--- a/src/goaidentity/goaalarm.c
++++ b/src/goaidentity/goaalarm.c
+@@ -242,72 +242,68 @@ goa_alarm_class_init (GoaAlarmClass *klass)
+   g_object_class_install_property (object_class,
+                                    PROP_TIME,
+                                    g_param_spec_boxed ("time",
+                                                        _("Time"),
+                                                        _("Time to fire"),
+                                                        G_TYPE_DATE_TIME,
+                                                        G_PARAM_READWRITE));
+ }
+ 
+ static void
+ goa_alarm_init (GoaAlarm *self)
+ {
+   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GOA_TYPE_ALARM, GoaAlarmPrivate);
+   self->priv->type = GOA_ALARM_TYPE_UNSCHEDULED;
+   g_rec_mutex_init (&self->priv->lock);
+ }
+ 
+ static gboolean
+ async_alarm_cancel_idle_cb (gpointer user_data)
+ {
+   GoaAlarm *self = user_data;
+ 
+   clear_scheduled_wakeups (self);
+   return G_SOURCE_REMOVE;
+ }
+ 
+ static void
+ on_cancelled (GCancellable *cancellable, gpointer user_data)
+ {
+   GoaAlarm *self = GOA_ALARM (user_data);
+-  GMainContext *main_context;
+   GSource *idle_source;
+ 
+-  main_context = g_main_context_ref_thread_default ();
+ 
+   idle_source = g_idle_source_new ();
+   g_source_set_priority (idle_source, G_PRIORITY_HIGH_IDLE);
+   g_source_set_callback (idle_source, async_alarm_cancel_idle_cb, g_object_ref (self), g_object_unref);
+-  g_source_attach (idle_source, main_context);
++  g_source_attach (idle_source, self->priv->context);
+   g_source_unref (idle_source);
+-
+-  g_main_context_unref (main_context);
+ }
+ 
+ static void
+ fire_alarm (GoaAlarm *self)
+ {
+   g_signal_emit (G_OBJECT (self), signals[FIRED], 0);
+ }
+ 
+ static void
+ rearm_alarm (GoaAlarm *self)
+ {
+   g_signal_emit (G_OBJECT (self), signals[REARMED], 0);
+ }
+ 
+ static void
+ fire_or_rearm_alarm (GoaAlarm *self)
+ {
+   GTimeSpan time_until_fire;
+   GTimeSpan previous_time_until_fire;
+   GDateTime *now;
+ 
+   now = g_date_time_new_now_local ();
+   time_until_fire = g_date_time_difference (self->priv->time, now);
+ 
+   if (self->priv->previous_wakeup_time == NULL)
+     {
+       self->priv->previous_wakeup_time = now;
+ 
+       /* If, according to the time, we're past when we should have fired,
+        * then fire the alarm.
+-- 
+1.8.3.1
+
