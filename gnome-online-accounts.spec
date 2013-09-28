@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.8.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -102,6 +102,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Fri Sep 27 2013 Ray Strode <rstrode@redhat.com> 3.8.3-3
+- Another attempt at fixing the busy loop on kinit
+  Resolves: #1005619
+
 * Fri Sep 27 2013 Ray Strode <rstrode@redhat.com> 3.8.3-2
 - Fix busy loop on kinit
   Resolves: #1005619

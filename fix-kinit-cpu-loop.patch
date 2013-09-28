@@ -93,3 +93,323 @@ index ae749f7..e9b904b 100644
 -- 
 1.8.3.1
 
+From 02729d9902daba9645eaf654e163e85ae5148407 Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Fri, 27 Sep 2013 20:39:47 -0400
+Subject: [PATCH 1/2] goaidentity: print warning if timerfd I/O fails
+
+Reading from a timerfd shouldn't fail, but if it
+does we should print what's going on.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=708975
+---
+ src/goaidentity/goaalarm.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/src/goaidentity/goaalarm.c b/src/goaidentity/goaalarm.c
+index e9b904b..4b9d086 100644
+--- a/src/goaidentity/goaalarm.c
++++ b/src/goaidentity/goaalarm.c
+@@ -337,72 +337,81 @@ fire_or_rearm_alarm (GoaAlarm *self)
+       else if (time_until_fire > 0 && previous_time_until_fire <= 0)
+         {
+           rearm_alarm (self);
+         }
+     }
+ }
+ 
+ static gboolean
+ on_immediate_wakeup_source_ready (GoaAlarm *self)
+ {
+   g_return_val_if_fail (self->priv->type != GOA_ALARM_TYPE_UNSCHEDULED, FALSE);
+ 
+   g_rec_mutex_lock (&self->priv->lock);
+   if (g_cancellable_is_cancelled (self->priv->cancellable))
+     goto out;
+ 
+   fire_or_rearm_alarm (self);
+ 
+ out:
+   g_rec_mutex_unlock (&self->priv->lock);
+   return FALSE;
+ }
+ 
+ #ifdef HAVE_TIMERFD
+ static gboolean
+ on_timer_source_ready (GObject *stream, GoaAlarm *self)
+ {
+   gint64 number_of_fires;
+   gssize bytes_read;
+   gboolean run_again = FALSE;
++  GError *error = NULL;
+ 
+   g_return_val_if_fail (GOA_IS_ALARM (self), FALSE);
+   g_return_val_if_fail (self->priv->type == GOA_ALARM_TYPE_TIMER, FALSE);
+ 
+   g_rec_mutex_lock (&self->priv->lock);
+   if (g_cancellable_is_cancelled (self->priv->cancellable))
+     goto out;
+ 
+   bytes_read =
+     g_pollable_input_stream_read_nonblocking (G_POLLABLE_INPUT_STREAM (stream),
+                                               &number_of_fires, sizeof (gint64),
+-                                              NULL, NULL);
++                                              NULL, &error);
++
++  if (bytes_read < 0)
++    {
++      goa_warning ("GoaAlarm: failed to read from timer fd: %s\n",
++                   error->message);
++      g_error_free (error);
++      goto out;
++    }
+ 
+   if (bytes_read == sizeof (gint64))
+     {
+       if (number_of_fires < 0 || number_of_fires > 1)
+         {
+           goa_warning ("GoaAlarm: expected timerfd to report firing once,"
+                        "but it reported firing %ld times\n", (long) number_of_fires);
+         }
+     }
+ 
+   fire_or_rearm_alarm (self);
+   run_again = TRUE;
+ out:
+   g_rec_mutex_unlock (&self->priv->lock);
+   return run_again;
+ }
+ 
+ static void
+ clear_timer_source_pointer (GoaAlarm *self)
+ {
+   self->priv->timer.source = NULL;
+ }
+ #endif
+ 
+ static gboolean
+ schedule_wakeups_with_timerfd (GoaAlarm *self)
+ {
+ #ifdef HAVE_TIMERFD
+   struct itimerspec timer_spec;
+   int fd;
+-- 
+1.8.3.1
+
+
+From d8d87593bcfa1127c29fa6643600a20e986ec5ea Mon Sep 17 00:00:00 2001
+From: Ray Strode <rstrode@redhat.com>
+Date: Fri, 27 Sep 2013 21:02:11 -0400
+Subject: [PATCH 2/2] identity: check proper cancellable from timer source
+ ready callback
+
+on_timer_source_ready is called in two cases:
+
+1) When the timer fires
+2) When the input stream cancellable is cancelled
+
+We attempt to check for this latter case up front at the start of the
+function and react appropriately. We do this by checking if
+self->priv->cancellable is cancelled.
+
+Unforunately, checking self->priv->cancellable isn't always right,
+because self->priv->cancellable isn't always the cancellable associated
+with the input stream.  They can get out of sync, when for instance, the
+alarm expiration time is changed. In this case the old input stream
+cancellable will get cancelled, and self->priv->cancellable will get set
+to the new cancellable.
+
+This commit makes sure the on_timer_source_ready callback always checks
+the cancellable associated with the input stream.  It accomplishes this
+by allocating a GTask and using that as the callback data instead of
+the alarm object directly.
+
+https://bugzilla.gnome.org/show_bug.cgi?id=708975
+---
+ src/goaidentity/goaalarm.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/src/goaidentity/goaalarm.c b/src/goaidentity/goaalarm.c
+index 4b9d086..bcd5d53 100644
+--- a/src/goaidentity/goaalarm.c
++++ b/src/goaidentity/goaalarm.c
+@@ -332,158 +332,171 @@ fire_or_rearm_alarm (GoaAlarm *self)
+           /* If, according to the time, we're before when we should fire,
+            * and we previously fired the alarm, then we've jumped back in
+            * time and need to rearm the alarm.
+            */
+         }
+       else if (time_until_fire > 0 && previous_time_until_fire <= 0)
+         {
+           rearm_alarm (self);
+         }
+     }
+ }
+ 
+ static gboolean
+ on_immediate_wakeup_source_ready (GoaAlarm *self)
+ {
+   g_return_val_if_fail (self->priv->type != GOA_ALARM_TYPE_UNSCHEDULED, FALSE);
+ 
+   g_rec_mutex_lock (&self->priv->lock);
+   if (g_cancellable_is_cancelled (self->priv->cancellable))
+     goto out;
+ 
+   fire_or_rearm_alarm (self);
+ 
+ out:
+   g_rec_mutex_unlock (&self->priv->lock);
+   return FALSE;
+ }
+ 
+ #ifdef HAVE_TIMERFD
+ static gboolean
+-on_timer_source_ready (GObject *stream, GoaAlarm *self)
++on_timer_source_ready (GObject *stream, GTask *task)
+ {
+   gint64 number_of_fires;
+   gssize bytes_read;
+   gboolean run_again = FALSE;
+   GError *error = NULL;
++  GoaAlarm *self;
++  GCancellable *cancellable;
++
++  self = g_task_get_source_object (task);
++  cancellable = g_task_get_cancellable (task);
+ 
+   g_return_val_if_fail (GOA_IS_ALARM (self), FALSE);
+   g_return_val_if_fail (self->priv->type == GOA_ALARM_TYPE_TIMER, FALSE);
+ 
+   g_rec_mutex_lock (&self->priv->lock);
+-  if (g_cancellable_is_cancelled (self->priv->cancellable))
++  if (g_cancellable_is_cancelled (cancellable))
+     goto out;
+ 
+   bytes_read =
+     g_pollable_input_stream_read_nonblocking (G_POLLABLE_INPUT_STREAM (stream),
+                                               &number_of_fires, sizeof (gint64),
+                                               NULL, &error);
+ 
+   if (bytes_read < 0)
+     {
+       goa_warning ("GoaAlarm: failed to read from timer fd: %s\n",
+                    error->message);
+       g_error_free (error);
+       goto out;
+     }
+ 
+   if (bytes_read == sizeof (gint64))
+     {
+       if (number_of_fires < 0 || number_of_fires > 1)
+         {
+           goa_warning ("GoaAlarm: expected timerfd to report firing once,"
+                        "but it reported firing %ld times\n", (long) number_of_fires);
+         }
+     }
+ 
+   fire_or_rearm_alarm (self);
+   run_again = TRUE;
+ out:
+   g_rec_mutex_unlock (&self->priv->lock);
+   return run_again;
+ }
+ 
+ static void
+-clear_timer_source_pointer (GoaAlarm *self)
++clear_timer_source (GTask *task)
+ {
++  GoaAlarm *self;
++
++  self = g_task_get_source_object (task);
+   self->priv->timer.source = NULL;
++
++  g_object_unref (task);
+ }
+ #endif
+ 
+ static gboolean
+ schedule_wakeups_with_timerfd (GoaAlarm *self)
+ {
+ #ifdef HAVE_TIMERFD
+   struct itimerspec timer_spec;
+   int fd;
+   int result;
+   GSource *source;
++  GTask *task;
+   static gboolean seen_before = FALSE;
+ 
+   if (!seen_before)
+     {
+       goa_debug ("GoaAlarm: trying to use kernel timer");
+       seen_before = TRUE;
+     }
+ 
+   fd = timerfd_create (CLOCK_REALTIME, TFD_CLOEXEC | TFD_NONBLOCK);
+ 
+   if (fd < 0)
+     {
+       goa_debug ("GoaAlarm: could not create timer fd: %m");
+       return FALSE;
+     }
+ 
+   memset (&timer_spec, 0, sizeof (timer_spec));
+   timer_spec.it_value.tv_sec = g_date_time_to_unix (self->priv->time) + 1;
+ 
+   result = timerfd_settime (fd,
+                             TFD_TIMER_ABSTIME | TFD_TIMER_CANCEL_ON_SET,
+                             &timer_spec, NULL);
+ 
+   if (result < 0)
+     {
+       goa_debug ("GoaAlarm: could not set timer: %m");
+       return FALSE;
+     }
+ 
+   self->priv->type = GOA_ALARM_TYPE_TIMER;
+   self->priv->timer.stream = g_unix_input_stream_new (fd, TRUE);
+ 
++  task = g_task_new (self, self->priv->cancellable, NULL, NULL);
++
+   source =
+     g_pollable_input_stream_create_source (G_POLLABLE_INPUT_STREAM
+                                            (self->priv->timer.stream),
+                                            self->priv->cancellable);
+   self->priv->timer.source = source;
+   g_source_set_callback (self->priv->timer.source,
+-                         (GSourceFunc) on_timer_source_ready, self,
+-                         (GDestroyNotify) clear_timer_source_pointer);
++                         (GSourceFunc) on_timer_source_ready, task,
++                         (GDestroyNotify) clear_timer_source);
+   g_source_attach (self->priv->timer.source, self->priv->context);
+   g_source_unref (source);
+ 
+   return TRUE;
+ 
+ #endif /*HAVE_TIMERFD */
+ 
+   return FALSE;
+ }
+ 
+ static gboolean
+ on_timeout_source_ready (GoaAlarm *self)
+ {
+   g_return_val_if_fail (GOA_IS_ALARM (self), FALSE);
+ 
+   g_rec_mutex_lock (&self->priv->lock);
+ 
+   if (g_cancellable_is_cancelled (self->priv->cancellable) ||
+       self->priv->type == GOA_ALARM_TYPE_UNSCHEDULED)
+     goto out;
+ 
+   fire_or_rearm_alarm (self);
+ 
+   if (g_cancellable_is_cancelled (self->priv->cancellable))
+     goto out;
+ 
+   schedule_wakeups_with_timeout_source (self);
+ 
+ out:
+   g_rec_mutex_unlock (&self->priv->lock);
+-- 
+1.8.3.1
+
