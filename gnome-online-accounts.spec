@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.8.3
-Release:	3%{?dist}
+Version:	3.8.4
+Release:	1%{?dist}
 Summary:	Provide online accounts information
 
 Group:		System Environment/Libraries
@@ -22,8 +22,6 @@ BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
 
-Patch0: fix-kinit-cpu-loop.patch
-
 %description
 gnome-online-accounts provides interfaces so applications and
 libraries in GNOME can access the user's online accounts.
@@ -41,7 +39,6 @@ files for developing applications that use gnome-online-accounts.
 
 %prep
 %setup -q
-%patch0 -p1 -b .fix-kinit-cpu-loop
 
 %build
 %configure \
@@ -102,6 +99,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Oct 08 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.8.4-1
+- Update to 3.8.4
+
 * Fri Sep 27 2013 Ray Strode <rstrode@redhat.com> 3.8.3-3
 - Another attempt at fixing the busy loop on kinit
   Resolves: #1005619
