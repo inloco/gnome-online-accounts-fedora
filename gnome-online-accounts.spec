@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.10.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -27,6 +27,8 @@ BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
 BuildRequires:	telepathy-glib-devel
 BuildRequires:	libxml2-devel
+
+Requires:	realmd
 
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
@@ -118,6 +120,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Oct 08 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.10.0-3
+- Add a Requires on realmd (Red Hat #949741)
+
 * Fri Sep 27 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.10.0-2
 - Fix GNOME #708462 and #708832
 
