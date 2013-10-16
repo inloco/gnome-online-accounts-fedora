@@ -1,17 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.10.0
-Release:	3%{?dist}
+Version:	3.10.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.10/%{name}-%{version}.tar.xz
-
-# https://bugzilla.gnome.org/show_bug.cgi?id=708462
-Patch0:		0001-Ensure-that-the-factory-is-initialized-before-using-.patch
-# https://bugzilla.gnome.org/show_bug.cgi?id=708832
-Patch1:		0002-oauth2-Propagate-the-error-if-the-dialog-is-dismisse.patch
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
@@ -48,8 +43,6 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 %configure \
@@ -120,6 +113,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed Oct 16 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-1
+- Update to 3.10.1
+
 * Tue Oct 08 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.10.0-3
 - Add a Requires on realmd (Red Hat #949741)
 
