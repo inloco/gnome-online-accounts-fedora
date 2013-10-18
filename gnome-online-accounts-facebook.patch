@@ -1,0 +1,487 @@
+From e52d671808139e8bce90e87f81486288267b645f Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Thu, 17 Oct 2013 16:26:16 +0200
+Subject: [PATCH 1/4] oauth2: Clean up
+
+Consolidate the ways in which the query and fragment are accessed.
+
+Fixes: https://bugzilla.gnome.org/710363
+---
+ src/goabackend/goaoauth2provider.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 8efdea5..3a5fdf9 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -888,9 +888,13 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+     {
+       SoupMessage *message;
+       SoupURI *uri;
++      const gchar *fragment;
++      const gchar *query;
+ 
+       message = webkit_network_request_get_message (request);
+       uri = soup_message_get_uri (message);
++      fragment = soup_uri_get_fragment (uri);
++      query = soup_uri_get_query (uri);
+ 
+       /* Two cases:
+        * 1) we can have either the auth code in the query part of the
+@@ -898,11 +902,11 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+        * 2) the access_token and other information directly in the
+        *    fragment part of the URI.
+        */
+-      if (soup_uri_get_query (uri) != NULL)
++      if (query != NULL)
+         {
+           GHashTable *key_value_pairs;
+ 
+-          key_value_pairs = soup_form_decode (uri->query);
++          key_value_pairs = soup_form_decode (query);
+ 
+           priv->authorization_code = g_strdup (g_hash_table_lookup (key_value_pairs, "code"));
+           if (priv->authorization_code != NULL)
+@@ -927,13 +931,13 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+           g_hash_table_unref (key_value_pairs);
+           webkit_web_policy_decision_ignore (policy_decision);
+         }
+-      else if (soup_uri_get_fragment (uri) != NULL)
++      else if (fragment != NULL)
+         {
+           GHashTable *key_value_pairs;
+ 
+           /* fragment is encoded into a key/value pairs for the token and
+            * expiration values, using the same syntax as a URL query */
+-          key_value_pairs = soup_form_decode (soup_uri_get_fragment (uri));
++          key_value_pairs = soup_form_decode (fragment);
+ 
+           /* We might use oauth2_proxy_extract_access_token() here but
+            * we can also extract other information.
+-- 
+1.8.3.1
+
+
+From d3d339b32122789e8422c0a66f1e580a3af29e26 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Fri, 18 Oct 2013 12:13:52 +0200
+Subject: [PATCH 2/4] oauth2: Clean up
+
+Simplify the maze of nested if-else branches and multiple return sites.
+
+Fixes: https://bugzilla.gnome.org/710363
+---
+ src/goabackend/goaoauth2provider.c | 173 +++++++++++++++++++------------------
+ 1 file changed, 88 insertions(+), 85 deletions(-)
+
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 3a5fdf9..45228ca 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -876,120 +876,123 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+ {
+   GoaOAuth2Provider *provider = GOA_OAUTH2_PROVIDER (user_data);
+   GoaOAuth2ProviderPrivate *priv = provider->priv;
++  SoupMessage *message;
++  SoupURI *uri;
++  const gchar *fragment;
+   const gchar *oauth2_error;
++  const gchar *query;
+   const gchar *redirect_uri;
+   const gchar *requested_uri;
++  gint response_id;
+ 
+   /* TODO: use oauth2_proxy_extract_access_token() */
+ 
+   requested_uri = webkit_network_request_get_uri (request);
+   redirect_uri = goa_oauth2_provider_get_redirect_uri (provider);
+-  if (g_str_has_prefix (requested_uri, redirect_uri))
++  if (!g_str_has_prefix (requested_uri, redirect_uri))
++    goto default_behaviour;
++
++  message = webkit_network_request_get_message (request);
++  uri = soup_message_get_uri (message);
++  fragment = soup_uri_get_fragment (uri);
++  query = soup_uri_get_query (uri);
++
++  /* Two cases:
++   * 1) we can have either the auth code in the query part of the
++   *    URI, with which we'll obtain the token, or
++   * 2) the access_token and other information directly in the
++   *    fragment part of the URI.
++   */
++  if (query != NULL)
+     {
+-      SoupMessage *message;
+-      SoupURI *uri;
+-      const gchar *fragment;
+-      const gchar *query;
+-
+-      message = webkit_network_request_get_message (request);
+-      uri = soup_message_get_uri (message);
+-      fragment = soup_uri_get_fragment (uri);
+-      query = soup_uri_get_query (uri);
+-
+-      /* Two cases:
+-       * 1) we can have either the auth code in the query part of the
+-       *    URI, with which we'll obtain the token, or
+-       * 2) the access_token and other information directly in the
+-       *    fragment part of the URI.
+-       */
+-      if (query != NULL)
+-        {
+-          GHashTable *key_value_pairs;
++      GHashTable *key_value_pairs;
+ 
+-          key_value_pairs = soup_form_decode (query);
++      key_value_pairs = soup_form_decode (query);
+ 
+-          priv->authorization_code = g_strdup (g_hash_table_lookup (key_value_pairs, "code"));
+-          if (priv->authorization_code != NULL)
+-            {
+-              gtk_dialog_response (priv->dialog, GTK_RESPONSE_OK);
+-            }
++      priv->authorization_code = g_strdup (g_hash_table_lookup (key_value_pairs, "code"));
++      if (priv->authorization_code != NULL)
++        {
++          response_id = GTK_RESPONSE_OK;
++        }
++      else
++        {
++          oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
++          if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
++            response_id = GTK_RESPONSE_CANCEL;
+           else
+             {
+-              oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
+-              if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
+-                gtk_dialog_response (priv->dialog, GTK_RESPONSE_CANCEL);
+-              else
+-                {
+-                  g_set_error (&priv->error,
+-                               GOA_ERROR,
+-                               GOA_ERROR_NOT_AUTHORIZED,
+-                               _("Authorization response was \"%s\""),
+-                               oauth2_error);
+-                  gtk_dialog_response (priv->dialog, GTK_RESPONSE_CLOSE);
+-                }
++              g_set_error (&priv->error,
++                           GOA_ERROR,
++                           GOA_ERROR_NOT_AUTHORIZED,
++                           _("Authorization response was \"%s\""),
++                           oauth2_error);
++              response_id = GTK_RESPONSE_CLOSE;
+             }
+-          g_hash_table_unref (key_value_pairs);
+-          webkit_web_policy_decision_ignore (policy_decision);
+         }
+-      else if (fragment != NULL)
+-        {
+-          GHashTable *key_value_pairs;
++      g_hash_table_unref (key_value_pairs);
++      goto ignore_request;
++    }
++  else if (fragment != NULL)
++    {
++      GHashTable *key_value_pairs;
+ 
+-          /* fragment is encoded into a key/value pairs for the token and
+-           * expiration values, using the same syntax as a URL query */
+-          key_value_pairs = soup_form_decode (fragment);
++      /* fragment is encoded into a key/value pairs for the token and
++       * expiration values, using the same syntax as a URL query */
++      key_value_pairs = soup_form_decode (fragment);
+ 
+-          /* We might use oauth2_proxy_extract_access_token() here but
+-           * we can also extract other information.
+-           */
+-          priv->access_token = g_strdup (g_hash_table_lookup (key_value_pairs, "access_token"));
+-          if (priv->access_token != NULL)
+-            {
+-              gchar *expires_in_str = NULL;
++      /* We might use oauth2_proxy_extract_access_token() here but
++       * we can also extract other information.
++       */
++      priv->access_token = g_strdup (g_hash_table_lookup (key_value_pairs, "access_token"));
++      if (priv->access_token != NULL)
++        {
++          gchar *expires_in_str = NULL;
+ 
+-              expires_in_str = g_hash_table_lookup (key_value_pairs, "expires_in");
+-              /* sometimes "expires_in" appears as "expires" */
+-              if (expires_in_str == NULL)
+-                expires_in_str = g_hash_table_lookup (key_value_pairs, "expires");
++          expires_in_str = g_hash_table_lookup (key_value_pairs, "expires_in");
++          /* sometimes "expires_in" appears as "expires" */
++          if (expires_in_str == NULL)
++            expires_in_str = g_hash_table_lookup (key_value_pairs, "expires");
+ 
+-              if (expires_in_str != NULL)
+-                 priv->access_token_expires_in = atoi (expires_in_str);
++          if (expires_in_str != NULL)
++            priv->access_token_expires_in = atoi (expires_in_str);
+ 
+-              priv->refresh_token = g_strdup (g_hash_table_lookup (key_value_pairs, "refresh_token"));
++          priv->refresh_token = g_strdup (g_hash_table_lookup (key_value_pairs, "refresh_token"));
+ 
+-              gtk_dialog_response (priv->dialog, GTK_RESPONSE_OK);
+-            }
+-          else
+-            {
+-              oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
+-              if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
+-                gtk_dialog_response (priv->dialog, GTK_RESPONSE_CANCEL);
+-              else
+-                {
+-                  g_set_error (&priv->error,
+-                               GOA_ERROR,
+-                               GOA_ERROR_NOT_AUTHORIZED,
+-                               _("Authorization response was \"%s\""),
+-                               oauth2_error);
+-                  gtk_dialog_response (priv->dialog, GTK_RESPONSE_CLOSE);
+-                }
+-            }
+-          g_hash_table_unref (key_value_pairs);
+-          webkit_web_policy_decision_ignore (policy_decision);
++          response_id = GTK_RESPONSE_OK;
+         }
+       else
+         {
+-          /* this actually means that something unexpected happened, either we
+-           * did something wrong or the provider's flow changed */
+-          goa_debug ("URI format not recognized, DEFAULT BEHAVIOUR");
+-          return FALSE;
++          oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
++          if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
++            response_id = GTK_RESPONSE_CANCEL;
++          else
++            {
++              g_set_error (&priv->error,
++                           GOA_ERROR,
++                           GOA_ERROR_NOT_AUTHORIZED,
++                           _("Authorization response was \"%s\""),
++                           oauth2_error);
++              response_id = GTK_RESPONSE_CLOSE;
++            }
+         }
+-      return TRUE; /* ignore the request */
++      g_hash_table_unref (key_value_pairs);
++      goto ignore_request;
+     }
+   else
+     {
+-      return FALSE; /* make default behavior apply */
++      /* this actually means that something unexpected happened, either we
++       * did something wrong or the provider's flow changed */
++      goa_debug ("URI format not recognized, DEFAULT BEHAVIOUR");
++      goto default_behaviour;
+     }
++
++ ignore_request:
++  gtk_dialog_response (priv->dialog, response_id);
++  webkit_web_policy_decision_ignore (policy_decision);
++  return TRUE;
++
++ default_behaviour:
++  return FALSE;
+ }
+ 
+ static void
+-- 
+1.8.3.1
+
+
+From d35556c6d522941add2c48aade2515f0ae6c5d50 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Fri, 18 Oct 2013 13:34:02 +0200
+Subject: [PATCH 3/4] oauth2: Adapt to changes in the redirect URI used by
+ Facebook
+
+Once the user has logged into the embedded web view and granted
+permissions, Facebook tries to redirect us to an URI of the form:
+  <get_redirect_uri>?#access_token=...
+
+Earlier this used to be of the form:
+  <get_redirect_uri>#access_token=...
+
+This confuses the navigation-policy-decision-requested handler to think
+that Facebook is using the query part of the URI to return the
+authorization code, which we will exchange for the access token. In
+reality Facebook is still using the fragment to directly give us the
+access token.
+
+Therefore, lets first look at the fragment, and then the query.
+
+According to the OAuth2 specification, the error is always passed in
+the query component of the URI. So, if we failed to obtain the
+authorization code or the access token, we should look at the query to
+ascertain the cause of the error. See 4.1.2.1 for more information:
+https://tools.ietf.org/html/draft-ietf-oauth-v2-23
+
+Fixes: https://bugzilla.gnome.org/710363
+---
+ src/goabackend/goaoauth2provider.c | 95 ++++++++++++++++----------------------
+ 1 file changed, 39 insertions(+), 56 deletions(-)
+
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 45228ca..523a235 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -876,6 +876,7 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+ {
+   GoaOAuth2Provider *provider = GOA_OAUTH2_PROVIDER (user_data);
+   GoaOAuth2ProviderPrivate *priv = provider->priv;
++  GHashTable *key_value_pairs;
+   SoupMessage *message;
+   SoupURI *uri;
+   const gchar *fragment;
+@@ -898,44 +899,13 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+   query = soup_uri_get_query (uri);
+ 
+   /* Two cases:
+-   * 1) we can have either the auth code in the query part of the
+-   *    URI, with which we'll obtain the token, or
+-   * 2) the access_token and other information directly in the
+-   *    fragment part of the URI.
++   * 1) we can either have the access_token and other information
++   *    directly in the fragment part of the URI, or
++   * 2) the auth code can be in the query part of the URI, with which
++   *    we'll obtain the token later.
+    */
+-  if (query != NULL)
+-    {
+-      GHashTable *key_value_pairs;
+-
+-      key_value_pairs = soup_form_decode (query);
+-
+-      priv->authorization_code = g_strdup (g_hash_table_lookup (key_value_pairs, "code"));
+-      if (priv->authorization_code != NULL)
+-        {
+-          response_id = GTK_RESPONSE_OK;
+-        }
+-      else
+-        {
+-          oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
+-          if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
+-            response_id = GTK_RESPONSE_CANCEL;
+-          else
+-            {
+-              g_set_error (&priv->error,
+-                           GOA_ERROR,
+-                           GOA_ERROR_NOT_AUTHORIZED,
+-                           _("Authorization response was \"%s\""),
+-                           oauth2_error);
+-              response_id = GTK_RESPONSE_CLOSE;
+-            }
+-        }
+-      g_hash_table_unref (key_value_pairs);
+-      goto ignore_request;
+-    }
+-  else if (fragment != NULL)
++  if (fragment != NULL)
+     {
+-      GHashTable *key_value_pairs;
+-
+       /* fragment is encoded into a key/value pairs for the token and
+        * expiration values, using the same syntax as a URL query */
+       key_value_pairs = soup_form_decode (fragment);
+@@ -960,31 +930,44 @@ on_web_view_navigation_policy_decision_requested (WebKitWebView             *web
+ 
+           response_id = GTK_RESPONSE_OK;
+         }
+-      else
+-        {
+-          oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
+-          if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
+-            response_id = GTK_RESPONSE_CANCEL;
+-          else
+-            {
+-              g_set_error (&priv->error,
+-                           GOA_ERROR,
+-                           GOA_ERROR_NOT_AUTHORIZED,
+-                           _("Authorization response was \"%s\""),
+-                           oauth2_error);
+-              response_id = GTK_RESPONSE_CLOSE;
+-            }
+-        }
+       g_hash_table_unref (key_value_pairs);
+-      goto ignore_request;
+     }
++
++  if (priv->access_token != NULL)
++    goto ignore_request;
++
++  if (query != NULL)
++    {
++      key_value_pairs = soup_form_decode (query);
++
++      priv->authorization_code = g_strdup (g_hash_table_lookup (key_value_pairs, "code"));
++      if (priv->authorization_code != NULL)
++        response_id = GTK_RESPONSE_OK;
++
++      g_hash_table_unref (key_value_pairs);
++    }
++
++  if (priv->authorization_code != NULL)
++    goto ignore_request;
++
++  /* In case we don't find the access_token or auth code, then look
++   * for the error in the query part of the URI.
++   */
++  key_value_pairs = soup_form_decode (query);
++  oauth2_error = (const gchar *) g_hash_table_lookup (key_value_pairs, "error");
++  if (g_strcmp0 (oauth2_error, GOA_OAUTH2_ACCESS_DENIED) == 0)
++    response_id = GTK_RESPONSE_CANCEL;
+   else
+     {
+-      /* this actually means that something unexpected happened, either we
+-       * did something wrong or the provider's flow changed */
+-      goa_debug ("URI format not recognized, DEFAULT BEHAVIOUR");
+-      goto default_behaviour;
++      g_set_error (&priv->error,
++                   GOA_ERROR,
++                   GOA_ERROR_NOT_AUTHORIZED,
++                   _("Authorization response was \"%s\""),
++                   oauth2_error);
++      response_id = GTK_RESPONSE_CLOSE;
+     }
++  g_hash_table_unref (key_value_pairs);
++  goto ignore_request;
+ 
+  ignore_request:
+   gtk_dialog_response (priv->dialog, response_id);
+-- 
+1.8.3.1
+
+
+From 333822428ac130905f67023cb30aab78169505d5 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Fri, 18 Oct 2013 11:51:01 +0200
+Subject: [PATCH 4/4] facebook: Update README
+
+Fixes: https://bugzilla.gnome.org/710363
+---
+ README | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/README b/README
+index dae1257..f80a891 100644
+--- a/README
++++ b/README
+@@ -9,8 +9,11 @@ OAuth 2.0: https://developers.facebook.com/docs/authentication/
+ Scopes: https://developers.facebook.com/docs/authentication/permissions/
+ 
+ Notes:
+-The client-side flow returns the access_token and expires_in in the URI
+-fragment, and does not provide a refresh_token.
++The client-side flow returns the access_token and expires_in in the URI's
++fragment, and does not provide a refresh_token. However, if the user denied
++access then the error is returned in the URI's query. The URIs look like this:
++  - <get_redirect_uri>?#access_token=...
++  - <get_redirect_uri>?error=access_denied...#_=_
+ 
+ 
+ Flickr
+-- 
+1.8.3.1
+
