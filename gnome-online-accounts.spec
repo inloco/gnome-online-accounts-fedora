@@ -117,7 +117,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
-* Fri Oct 19 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.10.1-2
+* Fri Oct 18 2013 Debarshi Ray <rishi@fedoraproject.org> - 3.10.1-2
 - Adapt to changes in the redirect URI used by Facebook (GNOME #710363)
 
 * Wed Oct 16 2013 Richard Hughes <rhughes@redhat.com> - 3.10.1-1
