@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.11.92
+Version:	3.12.0
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://live.gnome.org/GnomeOnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.11/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.12/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
@@ -115,6 +115,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Mar 25 2014 Kalev Lember <kalevlember@gmail.com> - 3.12.0-1
+- Update to 3.12.0
+
 * Tue Mar 18 2014 Debarshi Ray <rishi@fedoraproject.org> - 3.11.92-1
 - Update to 3.11.92
 
