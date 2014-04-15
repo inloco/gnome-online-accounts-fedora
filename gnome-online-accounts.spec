@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.12.0
-Release:	2%{?dist}
+Version:	3.12.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -25,9 +25,6 @@ BuildRequires:	libxml2-devel
 
 Requires:	realmd
 
-# https://bugzilla.gnome.org/show_bug.cgi?id=726609
-Patch0:		facebook-updates-and-fixes.patch
-
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
 in GNOME can access the user's online accounts. It has providers for Google,
@@ -47,7 +44,6 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
-%patch0 -p1 -b .facebook-updates-and-fixes
 
 %build
 %configure \
@@ -119,6 +115,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed Apr 16 2014 Kalev Lember <kalevlember@gmail.com> - 3.12.1-1
+- Update to 3.12.1
+
 * Tue Apr 01 2014 Debarshi Ray <rishi@fedoraproject.org> - 3.12.0-2
 - Popup is too small to display Facebook authorization (GNOME #726609)
 
