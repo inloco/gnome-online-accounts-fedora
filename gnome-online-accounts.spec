@@ -97,6 +97,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/*/apps/im-*.png
 %{_datadir}/icons/hicolor/*/apps/im-*.svg
 %{_datadir}/man/man8/goa-daemon.8.gz
+%{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/goawebview.css
