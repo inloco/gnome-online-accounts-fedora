@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.13.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
