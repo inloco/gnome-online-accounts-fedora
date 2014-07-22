@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.13.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -117,6 +117,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Jul 22 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.3-3
+- Rebuilt for gobject-introspection 1.41.4
+
 * Tue Jun 24 2014 Richard Hughes <rhughes@redhat.com> - 3.13.3-1
 - Update to 3.13.3
 
