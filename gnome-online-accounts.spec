@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.13.3
-Release:	4%{?dist}
+Version:	3.13.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -117,6 +117,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Mon Aug 18 2014 Kalev Lember <kalevlember@gmail.com> - 3.13.90-1
+- Update to 3.13.90
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.13.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
