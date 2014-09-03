@@ -34,8 +34,7 @@ IMAP/SMTP, Jabber, SIP and Kerberos.
 %package devel
 Summary:	Development files for %{name}
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	pkgconfig
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	gobject-introspection-devel
 
 %description devel
