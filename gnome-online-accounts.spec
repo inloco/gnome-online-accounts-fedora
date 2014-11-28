@@ -54,7 +54,6 @@ developing applications that use %{name}.
   --enable-google \
   --enable-imap-smtp \
   --enable-kerberos \
-  --enable-media-server \
   --enable-owncloud \
   --enable-pocket \
   --enable-telepathy \
