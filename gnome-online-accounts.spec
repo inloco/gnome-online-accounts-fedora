@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.14.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -115,6 +115,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Fri Nov 28 2014 Debarshi Ray <rishi@fedoraproject.org> - 3.14.2-2
+- Disable media-server - it is not ready for prime time, yet
+
 * Wed Nov 12 2014 Kalev Lember <kalevlember@gmail.com> - 3.14.2-1
 - Update to 3.14.2
 
