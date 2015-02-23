@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.15.4
+Version:	3.15.90
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -115,6 +115,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Mon Feb 23 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.90-1
+- Update to 3.15.90
+
 * Mon Jan 19 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.15.4-1
 - Update to 3.15.4
 
