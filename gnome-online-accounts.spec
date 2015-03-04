@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.15.90
+Version:	3.15.91
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -15,7 +15,7 @@ BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
 BuildRequires:	krb5-devel
-BuildRequires:	webkitgtk3-devel
+BuildRequires:	webkitgtk4-devel
 BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
 BuildRequires:	libsoup-devel >= 2.41
@@ -62,7 +62,7 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/control-center-1/panels/*.la
+find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
 %find_lang %{name}-tpaw
@@ -90,6 +90,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/libgoa-1.0.so.0.0.0
 %{_libdir}/libgoa-backend-1.0.so.1
 %{_libdir}/libgoa-backend-1.0.so.1.0.0
+%dir %{_libdir}/goa-1.0
+%dir %{_libdir}/goa-1.0/web-extensions
+%{_libdir}/goa-1.0/web-extensions/libgoawebextension.so
 %{_prefix}/libexec/goa-daemon
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
@@ -99,7 +102,6 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
 %dir %{_datadir}/%{name}
-%{_datadir}/%{name}/goawebview.css
 %{_datadir}/%{name}/irc-networks.xml
 
 %files devel
@@ -110,11 +112,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/pkgconfig/goa-1.0.pc
 %{_libdir}/pkgconfig/goa-backend-1.0.pc
 %{_datadir}/gtk-doc/html/goa/
-
-%dir %{_libdir}/goa-1.0
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed Mar 04 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.91-1
+- Update to 3.15.91
+
 * Mon Feb 23 2015 Kalev Lember <kalevlember@gmail.com> - 3.15.90-1
 - Update to 3.15.90
 
