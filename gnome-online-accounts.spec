@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.16.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -51,6 +51,7 @@ developing applications that use %{name}.
   --enable-exchange \
   --enable-facebook \
   --enable-flickr \
+  --enable-foursquare \
   --enable-google \
   --enable-imap-smtp \
   --enable-kerberos \
@@ -116,6 +117,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Thu Apr 30 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.16.0-2
+- Enable Foursquare
+
 * Mon Mar 23 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.0-1
 - Update to 3.16.0
 
