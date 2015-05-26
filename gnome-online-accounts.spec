@@ -5,7 +5,7 @@ Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
-URL:		https://live.gnome.org/GnomeOnlineAccounts
+URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.16/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
