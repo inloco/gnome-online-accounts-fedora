@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
 Version:	3.10.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -28,7 +28,7 @@ Requires:	realmd
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
 in GNOME can access the user's online accounts. It has providers for Google,
-ownCloud, Facebook, Flickr, Windows Live, Microsoft Exchange and Kerberos.
+ownCloud, Flickr, Windows Live, Microsoft Exchange and Kerberos.
 
 %package devel
 Summary:	Development files for %{name}
@@ -49,7 +49,7 @@ developing applications that use %{name}.
   --disable-static \
   --enable-gtk-doc \
   --enable-exchange \
-  --enable-facebook \
+  --disable-facebook \
   --enable-flickr \
   --enable-google \
   --enable-imap-smtp \
@@ -113,6 +113,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed May 27 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.10.7-2
+- Facebook retired the XMPP gateway, so disable it
+
 * Tue May 19 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.10.7-1
 - Update to 3.10.7
 
