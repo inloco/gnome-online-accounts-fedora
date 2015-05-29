@@ -1,12 +1,12 @@
 Name:		gnome-online-accounts
-Version:	3.16.2
+Version:	3.17.2
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.16/%{name}-%{version}.tar.xz
+Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.17/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
 BuildRequires:	glib2-devel >= 2.35
@@ -96,7 +96,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %dir %{_libdir}/goa-1.0/web-extensions
 %{_libdir}/goa-1.0/web-extensions/libgoawebextension.so
 %{_prefix}/libexec/goa-daemon
+%{_prefix}/libexec/goa-identity-service
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
+%{_datadir}/dbus-1/services/org.gnome.Identity.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/icons/hicolor/*/apps/im-*.png
 %{_datadir}/icons/hicolor/*/apps/im-*.svg
@@ -117,6 +119,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Fri May 29 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.17.2-1
+- Update to 3.17.2
+
 * Tue May 12 2015 Kalev Lember <kalevlember@gmail.com> - 3.16.2-1
 - Update to 3.16.2
 
