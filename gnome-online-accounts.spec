@@ -62,7 +62,7 @@ developing applications that use %{name}.
 make %{?_smp_mflags}
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install
 find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
@@ -121,6 +121,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Tue Sep 22 2015 Kalev Lember <klember@redhat.com> - 3.18.0-1
 - Update to 3.18.0
+- Use make_install macro
 
 * Wed Sep 16 2015 Debarshi Ray <rishi@fedoraproject.org> - 3.17.92.1-1
 - Update to 3.17.92.1
