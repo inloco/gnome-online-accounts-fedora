@@ -65,7 +65,6 @@ make %{?_smp_mflags}
 find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
-%find_lang %{name}-tpaw
 
 %post
 /sbin/ldconfig
@@ -83,7 +82,7 @@ fi
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%files -f %{name}.lang -f %{name}-tpaw.lang
+%files -f %{name}.lang
 %license COPYING
 %doc COPYING
 %{_libdir}/girepository-1.0/Goa-1.0.typelib
