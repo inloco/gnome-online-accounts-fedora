@@ -98,13 +98,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/dbus-1/services/org.gnome.Identity.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
-%{_datadir}/icons/hicolor/*/apps/im-*.png
-%{_datadir}/icons/hicolor/*/apps/im-*.svg
 %{_datadir}/man/man8/goa-daemon.8.gz
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
-
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/irc-networks.xml
 
 %files devel
 %{_includedir}/goa-1.0/
