@@ -1,6 +1,6 @@
 Name:		gnome-online-accounts
-Version:	3.19.4
-Release:	3%{?dist}
+Version:	3.19.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -112,6 +112,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Tue Feb 16 2016 Richard Hughes <rhughes@redhat.com> - 3.19.90-1
+- Update to 3.19.90
+
 * Fri Feb 12 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.19.4-3
 - Disable Telepathy
 
