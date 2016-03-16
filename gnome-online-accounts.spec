@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.19.90
+Version:	3.19.92
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -112,6 +112,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Wed Mar 16 2016 Kalev Lember <klember@redhat.com> - 3.19.92-1
+- Update to 3.19.92
+
 * Tue Feb 16 2016 Richard Hughes <rhughes@redhat.com> - 3.19.90-1
 - Update to 3.19.90
 
