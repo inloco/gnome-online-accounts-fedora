@@ -21,6 +21,7 @@ BuildRequires:	libsecret-devel >= 0.7
 BuildRequires:	libsoup-devel >= 2.41
 BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
+BuildRequires:	vala-tools
 
 Requires:	realmd
 
@@ -110,10 +111,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/pkgconfig/goa-backend-1.0.pc
 %{_datadir}/gtk-doc/html/goa/
 %{_libdir}/goa-1.0/include
+%{_datadir}/vala/
 
 %changelog
 * Wed Apr 13 2016 Kalev Lember <klember@redhat.com> - 3.20.1-1
 - Update to 3.20.1
+- Package vala bindings
 
 * Tue Mar 22 2016 Kalev Lember <klember@redhat.com> - 3.20.0-1
 - Update to 3.20.0
