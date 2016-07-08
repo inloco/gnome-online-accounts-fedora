@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.20.1
+Version:	3.20.2
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -28,8 +28,8 @@ Requires:	realmd
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
 in GNOME can access the user's online accounts. It has providers for Google,
-ownCloud, Facebook, Flickr, Windows Live, Pocket, Microsoft Exchange,
-IMAP/SMTP, Jabber, SIP and Kerberos.
+ownCloud, Facebook, Flickr, Foursquare, Microsoft Account, Pocket, Microsoft
+Exchange, IMAP/SMTP and Kerberos.
 
 %package devel
 Summary:	Development files for %{name}
@@ -114,6 +114,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Fri Jul 08 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.20.2-1
+- Update to 3.20.2
+
 * Wed Apr 13 2016 Kalev Lember <klember@redhat.com> - 3.20.1-1
 - Update to 3.20.1
 - Package vala bindings
