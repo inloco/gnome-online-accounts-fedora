@@ -28,8 +28,8 @@ Requires:	realmd
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
 in GNOME can access the user's online accounts. It has providers for Google,
-ownCloud, Facebook, Flickr, Windows Live, Pocket, Microsoft Exchange,
-IMAP/SMTP, Jabber, SIP and Kerberos.
+ownCloud, Facebook, Flickr, Foursquare, Microsoft Account, Pocket, Microsoft
+Exchange, IMAP/SMTP and Kerberos.
 
 %package devel
 Summary:	Development files for %{name}
