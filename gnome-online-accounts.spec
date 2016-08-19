@@ -1,3 +1,6 @@
+%global glib2_version 2.40
+%global gtk3_version 3.19.12
+
 Name:		gnome-online-accounts
 Version:	3.21.90
 Release:	1%{?dist}
@@ -9,8 +12,8 @@ URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.21/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
-BuildRequires:	glib2-devel >= 2.35
-BuildRequires:	gtk3-devel >= 3.5.1
+BuildRequires:	glib2-devel >= %{glib2_version}
+BuildRequires:	gtk3-devel >= %{gtk3_version}
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
@@ -23,6 +26,8 @@ BuildRequires:	rest-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	vala-tools
 
+Requires:	glib2%{?_isa} >= %{glib2_version}
+Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	realmd
 
 %description
@@ -116,6 +121,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Fri Aug 19 2016 Kalev Lember <klember@redhat.com> - 3.21.90-1
 - Update to 3.21.90
+- Set minimum glib2 and gtk3 versions
 
 * Wed Jul 20 2016 Richard Hughes <rhughes@redhat.com> - 3.21.4-1
 - Update to 3.21.4
