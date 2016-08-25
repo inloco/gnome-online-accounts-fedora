@@ -1,5 +1,5 @@
 Name:		gnome-online-accounts
-Version:	3.18.5
+Version:	3.18.6
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -9,16 +9,16 @@ URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.18/%{name}-%{version}.tar.xz
 
 BuildRequires:	gcr-devel
-BuildRequires:	glib2-devel >= 2.35
-BuildRequires:	gtk3-devel >= 3.5.1
+BuildRequires:	glib2-devel >= 2.40
+BuildRequires:	gtk3-devel >= 3.11.1
 BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
 BuildRequires:	krb5-devel
-BuildRequires:	webkitgtk4-devel
+BuildRequires:	webkitgtk4-devel >= 2.7.2
 BuildRequires:	json-glib-devel
 BuildRequires:	libsecret-devel >= 0.7
-BuildRequires:	libsoup-devel >= 2.41
+BuildRequires:	libsoup-devel >= 2.42
 BuildRequires:	rest-devel
 BuildRequires:	telepathy-glib-devel
 BuildRequires:	libxml2-devel
@@ -119,6 +119,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_libdir}/goa-1.0/include
 
 %changelog
+* Thu Aug 25 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.18.6-1
+- Update to 3.18.6
+
 * Thu Jul 07 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.18.5-1
 - Update to 3.18.5
 
