@@ -1,9 +1,11 @@
 %global glib2_version 2.40
 %global gtk3_version 3.19.12
+%global libsoup_version 2.42
+%global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
 Version:	3.21.90
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -11,24 +13,28 @@ License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.21/%{name}-%{version}.tar.xz
 
-BuildRequires:	gcr-devel
-BuildRequires:	glib2-devel >= %{glib2_version}
-BuildRequires:	gtk3-devel >= %{gtk3_version}
-BuildRequires:	gobject-introspection-devel
+BuildRequires:	pkgconfig(gcr-3)
+BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
+BuildRequires:	pkgconfig(glib-2.0) >= %{glib2_version}
+BuildRequires:	pkgconfig(gobject-2.0) >= %{glib2_version}
+BuildRequires:	pkgconfig(gtk+-3.0) >= %{gtk3_version}
+BuildRequires:	pkgconfig(gobject-introspection-1.0)
 BuildRequires:	gtk-doc
 BuildRequires:	intltool
 BuildRequires:	krb5-devel
-BuildRequires:	webkitgtk4-devel
-BuildRequires:	json-glib-devel
-BuildRequires:	libsecret-devel >= 0.7
-BuildRequires:	libsoup-devel >= 2.41
-BuildRequires:	rest-devel
-BuildRequires:	libxml2-devel
+BuildRequires:	pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
+BuildRequires:	pkgconfig(json-glib-1.0)
+BuildRequires:	pkgconfig(libsecret-1) >= 0.7
+BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
+BuildRequires:	pkgconfig(rest-0.7)
+BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala-tools
 
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
+Requires:	libsoup%{?_isa} >= %{libsoup_version}
 Requires:	realmd
+Requires:	webkitgtk4%{?_isa} >= %{webkitgtk4_version}
 
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
@@ -119,6 +125,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Tue Aug 30 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.21.90-3
+- Set minimum libsoup & webkitgtk4 versions; use pkgconfig(...) for BRs
+
 * Tue Aug 30 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.21.90-2
 - Use make_build macro
 
