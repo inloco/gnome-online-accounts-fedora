@@ -3,7 +3,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.21.90
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 Group:		System Environment/Libraries
@@ -64,7 +64,7 @@ developing applications that use %{name}.
   --enable-pocket \
   --disable-telepathy \
   --enable-windows-live
-make %{?_smp_mflags}
+%make_build
 
 %install
 %make_install
@@ -119,6 +119,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Tue Aug 30 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.21.90-2
+- Use make_build macro
+
 * Fri Aug 19 2016 Kalev Lember <klember@redhat.com> - 3.21.90-1
 - Update to 3.21.90
 - Set minimum glib2 and gtk3 versions
