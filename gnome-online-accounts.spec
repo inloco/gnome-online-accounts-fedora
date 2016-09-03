@@ -8,7 +8,6 @@ Version:	3.21.91
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
-Group:		System Environment/Libraries
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.21/%{name}-%{version}.tar.xz
@@ -44,7 +43,6 @@ Exchange, IMAP/SMTP and Kerberos.
 
 %package devel
 Summary:	Development files for %{name}
-Group:		Development/Libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	gobject-introspection-devel
 
@@ -127,6 +125,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Sat Sep 03 2016 Kalev Lember <klember@redhat.com> - 3.21.91-1
 - Update to 3.21.91
+- Don't set group tags
 
 * Tue Aug 30 2016 Debarshi Ray <rishi@fedoraproject.org> - 3.21.90-3
 - Set minimum libsoup & webkitgtk4 versions; use pkgconfig(...) for BRs
