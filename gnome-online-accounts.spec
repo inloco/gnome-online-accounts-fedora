@@ -44,7 +44,6 @@ Exchange, IMAP/SMTP and Kerberos.
 %package devel
 Summary:	Development files for %{name}
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	gobject-introspection-devel
 
 %description devel
 The %{name}-devel package contains libraries and header files for
@@ -95,6 +94,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %files -f %{name}.lang
 %license COPYING
 %doc COPYING
+%dir %{_libdir}/girepository-1.0
 %{_libdir}/girepository-1.0/Goa-1.0.typelib
 %{_libdir}/libgoa-1.0.so.0
 %{_libdir}/libgoa-1.0.so.0.0.0
@@ -115,6 +115,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_includedir}/goa-1.0/
 %{_libdir}/libgoa-1.0.so
 %{_libdir}/libgoa-backend-1.0.so
+%dir %{_datadir}/gir-1.0
 %{_datadir}/gir-1.0/Goa-1.0.gir
 %{_libdir}/pkgconfig/goa-1.0.pc
 %{_libdir}/pkgconfig/goa-backend-1.0.pc
@@ -125,6 +126,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %changelog
 * Fri Sep 16 2016 Kalev Lember <klember@redhat.com> - 3.21.92-1
 - Update to 3.21.92
+- Co-own gir directories instead of depending on gobject-introspection
 
 * Sat Sep 03 2016 Kalev Lember <klember@redhat.com> - 3.21.91-1
 - Update to 3.21.91
