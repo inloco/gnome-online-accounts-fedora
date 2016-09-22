@@ -4,13 +4,13 @@
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.21.92
+Version:	3.22.0
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	http://download.gnome.org/sources/gnome-online-accounts/3.21/%{name}-%{version}.tar.xz
+Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.22/%{name}-%{version}.tar.xz
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -124,6 +124,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-1
+- Update to 3.22.0
+
 * Fri Sep 16 2016 Kalev Lember <klember@redhat.com> - 3.21.92-1
 - Update to 3.21.92
 - Co-own gir directories instead of depending on gobject-introspection
