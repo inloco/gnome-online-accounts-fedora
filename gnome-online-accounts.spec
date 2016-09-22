@@ -5,7 +5,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.22.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -27,7 +27,7 @@ BuildRequires:	pkgconfig(libsecret-1) >= 0.7
 BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
 BuildRequires:	pkgconfig(rest-0.7)
 BuildRequires:	pkgconfig(libxml-2.0)
-BuildRequires:	vala-tools
+BuildRequires:	vala
 
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
@@ -124,6 +124,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-2
+- BR vala instead of obsolete vala-tools subpackage
+
 * Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-1
 - Update to 3.22.0
 
