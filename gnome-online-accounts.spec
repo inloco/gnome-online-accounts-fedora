@@ -65,6 +65,7 @@ developing applications that use %{name}.
   --enable-kerberos \
   --enable-owncloud \
   --enable-pocket \
+  --disable-silent-rules \
   --disable-telepathy \
   --enable-windows-live
 %make_build
