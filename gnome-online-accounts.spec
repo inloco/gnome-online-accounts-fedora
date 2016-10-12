@@ -4,8 +4,8 @@
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.22.0
-Release:	2%{?dist}
+Version:	3.22.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -125,6 +125,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Wed Oct 12 2016 Kalev Lember <klember@redhat.com> - 3.22.1-1
+- Update to 3.22.1
+
 * Thu Sep 22 2016 Kalev Lember <klember@redhat.com> - 3.22.0-2
 - BR vala instead of obsolete vala-tools subpackage
 
