@@ -1,10 +1,10 @@
-%global glib2_version 2.40
+%global glib2_version 2.44
 %global gtk3_version 3.19.12
 %global libsoup_version 2.42
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.23.90
+Version:	3.23.91
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -125,6 +125,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Fri Mar 03 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.23.91-1
+- Update to 3.23.91
+
 * Tue Feb 28 2017 Richard Hughes <rhughes@redhat.com> - 3.23.90-1
 - Update to 3.23.90
 
