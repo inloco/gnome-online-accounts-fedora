@@ -26,6 +26,9 @@ BuildRequires:	pkgconfig(json-glib-1.0)
 BuildRequires:	pkgconfig(libsecret-1) >= 0.7
 BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
 BuildRequires:	pkgconfig(rest-0.7)
+%if 0%{?rhel}
+BuildRequires:	pkgconfig(telepathy-glib)
+%endif
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala
 
@@ -56,17 +59,23 @@ developing applications that use %{name}.
 %configure \
   --disable-static \
   --enable-gtk-doc \
-  --enable-exchange \
+%if 0%{?rhel}
+  --disable-facebook \
+  --disable-foursquare \
+  --enable-telepathy \
+%else
+  --disable-telepathy \
   --enable-facebook \
-  --enable-flickr \
   --enable-foursquare \
+%endif
+  --enable-exchange \
+  --enable-flickr \
   --enable-google \
   --enable-imap-smtp \
   --enable-kerberos \
   --enable-owncloud \
   --enable-pocket \
   --disable-silent-rules \
-  --disable-telepathy \
   --enable-windows-live
 %make_build
 
@@ -75,6 +84,10 @@ developing applications that use %{name}.
 find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
+
+%if 0%{?rhel}
+%find_lang %{name}-tpaw
+%endif
 
 %post
 /sbin/ldconfig
@@ -92,7 +105,12 @@ fi
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
+%if 0%{?rhel}
+%files -f %{name}.lang -f %{name}-tpaw.lang
+%else
 %files -f %{name}.lang
+%endif
+
 %license COPYING
 %doc COPYING
 %dir %{_libdir}/girepository-1.0
@@ -111,6 +129,14 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
 %{_datadir}/man/man8/goa-daemon.8.gz
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
+
+%if 0%{?rhel}
+%{_datadir}/icons/hicolor/*/apps/im-*.png
+%{_datadir}/icons/hicolor/*/apps/im-*.svg
+
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/irc-networks.xml
+%endif
 
 %files devel
 %{_includedir}/goa-1.0/
