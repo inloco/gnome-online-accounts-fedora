@@ -1,11 +1,11 @@
-%global glib2_version 2.44
+%global glib2_version 2.52
 %global gtk3_version 3.19.12
 %global libsoup_version 2.42
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.25.4
-Release:	3%{?dist}
+Version:	3.25.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -151,6 +151,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Tue Aug 15 2017 Kalev Lember <klember@redhat.com> - 3.25.90-1
+- Update to 3.25.90
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.25.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
