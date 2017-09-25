@@ -5,7 +5,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.26.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -26,7 +26,7 @@ BuildRequires:	pkgconfig(json-glib-1.0)
 BuildRequires:	pkgconfig(libsecret-1) >= 0.7
 BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
 BuildRequires:	pkgconfig(rest-0.7)
-%if 0%{?rhel}
+%if ! 0%{?fedora} && 0%{?rhel} <= 7
 BuildRequires:	pkgconfig(telepathy-glib)
 %endif
 BuildRequires:	pkgconfig(libxml-2.0)
@@ -59,7 +59,7 @@ developing applications that use %{name}.
 %configure \
   --disable-static \
   --enable-gtk-doc \
-%if 0%{?rhel}
+%if ! 0%{?fedora} && 0%{?rhel} <= 7
   --disable-facebook \
   --disable-foursquare \
   --enable-telepathy \
@@ -85,7 +85,7 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
 
-%if 0%{?rhel}
+%if ! 0%{?fedora} && 0%{?rhel} <= 7
 %find_lang %{name}-tpaw
 %endif
 
@@ -105,7 +105,7 @@ fi
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
-%if 0%{?rhel}
+%if ! 0%{?fedora} && 0%{?rhel} <= 7
 %files -f %{name}.lang -f %{name}-tpaw.lang
 %else
 %files -f %{name}.lang
@@ -130,7 +130,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/man/man8/goa-daemon.8.gz
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
-%if 0%{?rhel}
+%if ! 0%{?fedora} && 0%{?rhel} <= 7
 %{_datadir}/icons/hicolor/*/apps/im-*.png
 %{_datadir}/icons/hicolor/*/apps/im-*.svg
 
@@ -151,6 +151,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Tue Sep 19 2017 Troy Dawson <tdawson@redhat.com> - 3.26.0-2
+- Cleanup spec file conditionals
+
 * Wed Sep 13 2017 Kalev Lember <klember@redhat.com> - 3.26.0-1
 - Update to 3.26.0
 
