@@ -4,8 +4,8 @@
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.26.0
-Release:	2%{?dist}
+Version:	3.26.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -151,6 +151,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Sun Oct 08 2017 Kalev Lember <klember@redhat.com> - 3.26.1-1
+- Update to 3.26.1
+
 * Tue Sep 19 2017 Troy Dawson <tdawson@redhat.com> - 3.26.0-2
 - Cleanup spec file conditionals
 
