@@ -57,8 +57,11 @@ developing applications that use %{name}.
 
 %build
 %configure \
+  --disable-lastfm \
+  --disable-media-server \
+  --disable-silent-rules \
   --disable-static \
-  --enable-gtk-doc \
+  --disable-todoist \
 %if 0%{?rhel}
   --disable-facebook \
   --disable-foursquare \
@@ -71,11 +74,11 @@ developing applications that use %{name}.
   --enable-exchange \
   --enable-flickr \
   --enable-google \
+  --enable-gtk-doc \
   --enable-imap-smtp \
   --enable-kerberos \
   --enable-owncloud \
   --enable-pocket \
-  --disable-silent-rules \
   --enable-windows-live
 %make_build
 
