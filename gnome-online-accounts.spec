@@ -4,7 +4,7 @@
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.24.3
+Version:	3.24.4
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -151,6 +151,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Thu Oct 19 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.24.4-1
+- Update to 3.24.4
+
 * Tue Sep 05 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.24.3-1
 - Update to 3.24.3
 
