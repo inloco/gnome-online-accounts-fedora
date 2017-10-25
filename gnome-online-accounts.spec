@@ -5,12 +5,15 @@
 
 Name:		gnome-online-accounts
 Version:	3.27.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.27/%{name}-%{version}.tar.xz
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=781005
+Patch0:		gnome-online-accounts-remove-the-option-to-preseed-the-providers.patch
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -54,6 +57,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure \
@@ -154,6 +158,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Wed Oct 25 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.27.1-2
+- Backport fix for adding multiple accounts of the same type (GNOME #781005)
+
 * Thu Oct 19 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.27.1-1
 - Update to 3.27.1
 
