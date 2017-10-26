@@ -1,0 +1,362 @@
+From 336ab9d8db8dbe99ff1332e8a7710a1c2dc77f5e Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Wed, 25 Oct 2017 14:12:43 +0200
+Subject: [PATCH] Remove the option to preseed the providers & deprecate
+ associated API
+
+It's been more than four years and nobody ended up using this feature.
+However, the extra cookie management that's necessary to implement this
+feature has now exposed code, which people actually use, to a
+WebKitGTK+ bug that's taking quite some time to be fixed. Therefore,
+this is a good an excuse as any to remove this code.
+
+This reverts commits 01447f6de49b640b7e298210aeb84390c804e9b3 and
+1f714a8d536ea08fb9df0d3ce1250b4a67f35bba
+
+https://bugzilla.gnome.org/show_bug.cgi?id=781005
+---
+ doc/goa-sections.txt               |  1 -
+ src/goabackend/goaoauth2provider.c | 67 --------------------------------------
+ src/goabackend/goaprovider.c       | 42 +++++-------------------
+ src/goabackend/goaprovider.h       |  2 ++
+ src/goabackend/goawebview.c        | 28 ----------------
+ src/goabackend/goawebview.h        |  2 --
+ 6 files changed, 11 insertions(+), 131 deletions(-)
+
+diff --git a/doc/goa-sections.txt b/doc/goa-sections.txt
+index 152d13edc5a3..1c1a6a1c371d 100644
+--- a/doc/goa-sections.txt
++++ b/doc/goa-sections.txt
+@@ -455,7 +455,6 @@ GOA_PROVIDER_GET_CLASS
+ GOA_IS_PROVIDER
+ GOA_IS_PROVIDER_CLASS
+ GOA_TYPE_PROVIDER
+-GoaProviderPrivate
+ goa_provider_get_type
+ </SECTION>
+ 
+diff --git a/src/goabackend/goaoauth2provider.c b/src/goabackend/goaoauth2provider.c
+index 7e625b04bbce..e1b5660ff53b 100644
+--- a/src/goabackend/goaoauth2provider.c
++++ b/src/goabackend/goaoauth2provider.c
+@@ -591,66 +591,6 @@ goa_oauth2_provider_is_identity_node (GoaOAuth2Provider *provider, WebKitDOMHTML
+   return GOA_OAUTH2_PROVIDER_GET_CLASS (provider)->is_identity_node (provider, element);
+ }
+ 
+-/* ---------------------------------------------------------------------------------------------------- */
+-
+-static SoupCookie*
+-create_cookie_from_variant (GVariant *variant)
+-{
+-  SoupCookie *cookie;
+-  gchar *name, *value, *domain, *path;
+-  gboolean secure, http_only;
+-
+-  g_return_val_if_fail (g_variant_is_of_type (variant, G_VARIANT_TYPE_VARDICT), NULL);
+-
+-  g_variant_lookup (variant, "name", "&s", &name);
+-  g_variant_lookup (variant, "value", "&s", &value);
+-  g_variant_lookup (variant, "domain", "&s", &domain);
+-  g_variant_lookup (variant, "path", "&s", &path);
+-  g_variant_lookup (variant, "secure", "b", &secure);
+-  g_variant_lookup (variant, "http_only", "b", &http_only);
+-
+-  cookie = soup_cookie_new (name, value, domain, path, -1);
+-  soup_cookie_set_secure (cookie, secure);
+-  soup_cookie_set_http_only (cookie, http_only);
+-
+-  return cookie;
+-}
+-
+-static GSList*
+-extract_cookies_from_preseed_data (GVariant *preseed)
+-{
+-  GVariant *cookies_v, *cookie_v;
+-  GSList *cookies = NULL;
+-  GVariantIter iter;
+-
+-  if (preseed == NULL)
+-    return NULL;
+-
+-  cookies_v = g_variant_lookup_value (preseed, "cookies", NULL);
+-  if (cookies_v == NULL)
+-    return NULL;
+-
+-  if (!g_variant_is_of_type (cookies_v, G_VARIANT_TYPE ("av")))
+-    {
+-      g_warning ("Wrong type for the 'cookies' GVariant, expected 'av' but got '%s'",
+-                 (gchar *)g_variant_get_type (cookies_v));
+-      goto out;
+-    }
+-
+-  g_variant_iter_init (&iter, cookies_v);
+-  while ((cookie_v = g_variant_iter_next_value (&iter)) != NULL)
+-    {
+-      SoupCookie *cookie = create_cookie_from_variant (g_variant_get_variant (cookie_v));
+-      if (cookie != NULL)
+-          cookies = g_slist_prepend (cookies, cookie);
+-      g_variant_unref(cookie_v);
+-    }
+-out:
+-  g_variant_unref(cookies_v);
+-  return cookies;
+-}
+-
+-
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+ static gchar *
+@@ -988,10 +928,8 @@ get_tokens_and_identity (GoaOAuth2Provider  *provider,
+   GoaOAuth2ProviderPrivate *priv = provider->priv;
+   gboolean ret;
+   gchar *url;
+-  GSList *cookies;
+   GtkWidget *embed;
+   GtkWidget *grid;
+-  GVariant *preseed_data;
+   GtkWidget *web_view;
+   const gchar *scope;
+   gchar *escaped_redirect_uri;
+@@ -1050,11 +988,6 @@ get_tokens_and_identity (GoaOAuth2Provider  *provider,
+   gtk_widget_set_vexpand (web_view, TRUE);
+   embed = goa_web_view_get_view (GOA_WEB_VIEW (web_view));
+ 
+-  preseed_data = goa_provider_get_preseed_data (GOA_PROVIDER (provider));
+-  cookies = extract_cookies_from_preseed_data (preseed_data);
+-  goa_web_view_add_cookies (GOA_WEB_VIEW (web_view), cookies);
+-  soup_cookies_free (cookies);
+-
+   if (goa_oauth2_provider_get_use_mobile_browser (provider))
+     goa_web_view_fake_mobile (GOA_WEB_VIEW (web_view));
+ 
+diff --git a/src/goabackend/goaprovider.c b/src/goabackend/goaprovider.c
+index bae7343bd00d..b645b3d3eaf7 100644
+--- a/src/goabackend/goaprovider.c
++++ b/src/goabackend/goaprovider.c
+@@ -50,11 +50,6 @@
+  * #GoaProvider is the base type for all providers.
+  */
+ 
+-struct _GoaProviderPrivate
+-{
+-  GVariant *preseed_data;
+-};
+-
+ enum {
+   PROP_0,
+   PROP_PRESEED_DATA,
+@@ -101,8 +96,6 @@ static void goa_provider_show_account_real (GoaProvider         *provider,
+                                             GtkGrid             *dummy1,
+                                             GtkGrid             *dummy2);
+ 
+-#define GOA_PROVIDER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GOA_TYPE_PROVIDER, GoaProviderPrivate))
+-
+ G_DEFINE_ABSTRACT_TYPE (GoaProvider, goa_provider, G_TYPE_OBJECT);
+ 
+ static struct {
+@@ -187,11 +180,9 @@ goa_provider_get_property (GObject *object,
+                            GValue *value,
+                            GParamSpec *pspec)
+ {
+-    GoaProvider *self = GOA_PROVIDER (object);
+-
+     switch (property_id) {
+     case PROP_PRESEED_DATA:
+-        g_value_set_variant (value, self->priv->preseed_data);
++        g_value_set_variant (value, NULL);
+         break;
+     default:
+         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+@@ -205,11 +196,8 @@ goa_provider_set_property (GObject *object,
+                            const GValue *value,
+                            GParamSpec *pspec)
+ {
+-    GoaProvider *self = GOA_PROVIDER (object);
+-
+     switch (property_id) {
+     case PROP_PRESEED_DATA:
+-        goa_provider_set_preseed_data (self, g_value_get_variant (value));
+         break;
+     default:
+         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+@@ -217,20 +205,9 @@ goa_provider_set_property (GObject *object,
+     }
+ }
+ 
+-static void
+-goa_provider_dispose (GObject *object)
+-{
+-  GoaProvider *self = GOA_PROVIDER (object);
+-
+-  g_clear_pointer (&self->priv->preseed_data, g_variant_unref);
+-
+-  G_OBJECT_CLASS (goa_provider_parent_class)->dispose (object);
+-}
+-
+ static void
+ goa_provider_init (GoaProvider *self)
+ {
+-  self->priv = GOA_PROVIDER_GET_PRIVATE (self);
+ }
+ 
+ static void
+@@ -238,11 +215,8 @@ goa_provider_class_init (GoaProviderClass *klass)
+ {
+   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GoaProviderPrivate));
+-
+   object_class->set_property = goa_provider_set_property;
+   object_class->get_property = goa_provider_get_property;
+-  object_class->dispose = goa_provider_dispose;
+ 
+   klass->build_object = goa_provider_build_object_real;
+   klass->ensure_credentials_sync = goa_provider_ensure_credentials_sync_real;
+@@ -282,6 +256,8 @@ goa_provider_class_init (GoaProviderClass *klass)
+  * </informalexample>
+  *
+  * Unknown or unsupported keys will be ignored by providers.
++ *
++ * Deprecated: This property does nothing.
+  */
+   properties[PROP_PRESEED_DATA] =
+     g_param_spec_variant ("preseed-data",
+@@ -291,7 +267,7 @@ goa_provider_class_init (GoaProviderClass *klass)
+         "browser session or the entrypoint url for self-hosted services).",
+         G_VARIANT_TYPE_VARDICT,
+         NULL,
+-        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
++        G_PARAM_DEPRECATED | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+ 
+   g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
+ }
+@@ -1396,15 +1372,13 @@ goa_provider_remove_account_finish_real (GoaProvider   *self,
+  *
+  * If the @preseed_data #GVariant is floating, it is consumed to allow
+  * 'inline' use of the g_variant_new() family of functions.
++ *
++ * Deprecated: This function does nothing.
+  */
+ void
+ goa_provider_set_preseed_data (GoaProvider *self,
+                                GVariant    *preseed_data)
+ {
+-  g_clear_pointer (&self->priv->preseed_data, g_variant_unref);
+-  if (preseed_data != NULL)
+-    self->priv->preseed_data = g_variant_ref_sink (preseed_data);
+-  g_object_notify (G_OBJECT (self), "preseed-data");
+ }
+ 
+ /**
+@@ -1415,11 +1389,13 @@ goa_provider_set_preseed_data (GoaProvider *self,
+  *
+  * Returns: (transfer none): A #GVariant that is known to be valid until
+  *   the property is overridden or the provider freed.
++ *
++ * Deprecated: This function does nothing.
+  */
+ GVariant *
+ goa_provider_get_preseed_data (GoaProvider *self)
+ {
+-  return self->priv->preseed_data;
++  return NULL;
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+diff --git a/src/goabackend/goaprovider.h b/src/goabackend/goaprovider.h
+index db7967488984..b40fd9098a9c 100644
+--- a/src/goabackend/goaprovider.h
++++ b/src/goabackend/goaprovider.h
+@@ -53,9 +53,11 @@ GoaProviderGroup       goa_provider_get_provider_group           (GoaProvider
+ 
+ GoaProviderFeatures    goa_provider_get_provider_features        (GoaProvider            *self);
+ 
++G_DEPRECATED
+ void                   goa_provider_set_preseed_data             (GoaProvider            *self,
+                                                                   GVariant               *preseed_data);
+ 
++G_DEPRECATED
+ GVariant              *goa_provider_get_preseed_data             (GoaProvider            *self);
+ 
+ GoaObject             *goa_provider_add_account                  (GoaProvider            *self,
+diff --git a/src/goabackend/goawebview.c b/src/goabackend/goawebview.c
+index 260449eaee57..6af11c1427b0 100644
+--- a/src/goabackend/goawebview.c
++++ b/src/goabackend/goawebview.c
+@@ -38,7 +38,6 @@ struct _GoaWebView
+   GtkWidget *floating_bar;
+   GtkWidget *progress_bar;
+   GtkWidget *web_view;
+-  SoupCookieJar *cookie_jar;
+   WebKitUserContentManager *user_content_manager;
+   WebKitWebContext *context;
+   gchar *existing_identity;
+@@ -271,10 +270,7 @@ static void
+ goa_web_view_constructed (GObject *object)
+ {
+   GoaWebView *self = GOA_WEB_VIEW (object);
+-  WebKitCookieManager *cookie_manager;
+   const gchar *const *language_names;
+-  gchar *jar_dir;
+-  gchar *jar_file;
+ 
+   G_OBJECT_CLASS (goa_web_view_parent_class)->constructed (object);
+ 
+@@ -286,16 +282,6 @@ goa_web_view_constructed (GObject *object)
+                             G_CALLBACK (web_view_initialize_web_extensions_cb),
+                             self);
+ 
+-  cookie_manager = webkit_web_context_get_cookie_manager (self->context);
+-  jar_file = g_build_filename (g_get_user_cache_dir (), "goa-1.0", "cookies.sqlite", NULL);
+-  jar_dir = g_path_get_dirname (jar_file);
+-  g_mkdir_with_parents (jar_dir, 0700);
+-  self->cookie_jar = soup_cookie_jar_db_new (jar_file, FALSE);
+-  webkit_cookie_manager_set_persistent_storage (cookie_manager, jar_file, WEBKIT_COOKIE_PERSISTENT_STORAGE_SQLITE);
+-  webkit_cookie_manager_delete_all_cookies (cookie_manager);
+-  g_free (jar_dir);
+-  g_free (jar_file);
+-
+   self->user_content_manager = webkit_user_content_manager_new ();
+   g_signal_connect_swapped (self->user_content_manager,
+                             "script-message-received::deny-click",
+@@ -359,7 +345,6 @@ goa_web_view_dispose (GObject *object)
+ {
+   GoaWebView *self = GOA_WEB_VIEW (object);
+ 
+-  g_clear_object (&self->cookie_jar);
+   g_clear_object (&self->user_content_manager);
+   g_clear_object (&self->context);
+ 
+@@ -514,16 +499,3 @@ goa_web_view_fake_mobile (GoaWebView *self)
+                                   "Mozilla/5.0 (GNOME; not Android) "
+                                   "AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile");
+ }
+-
+-void
+-goa_web_view_add_cookies (GoaWebView *self,
+-                          GSList     *cookies)
+-{
+-  GSList *l;
+-
+-  for (l = cookies; l != NULL; l = l->next)
+-    {
+-      SoupCookie *cookie = l->data;
+-      soup_cookie_jar_add_cookie (self->cookie_jar, soup_cookie_copy (cookie));
+-    }
+-}
+diff --git a/src/goabackend/goawebview.h b/src/goabackend/goawebview.h
+index 21a8cfcff2a0..2fa36e409a6b 100644
+--- a/src/goabackend/goawebview.h
++++ b/src/goabackend/goawebview.h
+@@ -37,8 +37,6 @@ GtkWidget             *goa_web_view_new                    (GoaProvider *provide
+                                                             const gchar *existing_identity);
+ GtkWidget             *goa_web_view_get_view               (GoaWebView *self);
+ void                   goa_web_view_fake_mobile            (GoaWebView *self);
+-void                   goa_web_view_add_cookies            (GoaWebView *self,
+-                                                            GSList     *cookies);
+ 
+ G_END_DECLS
+ 
+-- 
+2.14.2
+
