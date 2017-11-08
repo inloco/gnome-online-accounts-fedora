@@ -5,7 +5,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.24.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -15,6 +15,10 @@ Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.24/%{name}-%
 # https://bugzilla.gnome.org/show_bug.cgi?id=781005
 Patch0:		gnome-online-accounts-remove-the-option-to-preseed-the-providers.patch
 
+# https://bugzilla.gnome.org/show_bug.cgi?id=789187
+Patch1:		gnome-online-accounts-kerberos-fixes.patch
+
+BuildRequires:	autoconf automake libtool
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
 BuildRequires:	pkgconfig(glib-2.0) >= %{glib2_version}
@@ -58,8 +62,10 @@ developing applications that use %{name}.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
+autoreconf --force --install --verbose
 %configure \
   --disable-static \
   --enable-gtk-doc \
@@ -155,6 +161,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Wed Nov 08 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.24.4-3
+- Backport fix for adding Fedora Kerberos accounts (GNOME #789187)
+
 * Wed Oct 25 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.24.4-2
 - Backport fix for adding multiple accounts of the same type (GNOME #781005)
 
