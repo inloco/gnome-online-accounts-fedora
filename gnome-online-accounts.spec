@@ -39,7 +39,6 @@ BuildRequires:	vala
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	libsoup%{?_isa} >= %{libsoup_version}
-Requires:	realmd
 Requires:	webkitgtk4%{?_isa} >= %{webkitgtk4_version}
 
 %description
