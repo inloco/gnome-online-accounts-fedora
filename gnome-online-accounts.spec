@@ -1,3 +1,4 @@
+%global gettext_version 0.19.8
 %global glib2_version 2.52
 %global gtk3_version 3.19.12
 %global libsoup_version 2.42
@@ -18,8 +19,8 @@ BuildRequires:	pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires:	pkgconfig(gobject-2.0) >= %{glib2_version}
 BuildRequires:	pkgconfig(gtk+-3.0) >= %{gtk3_version}
 BuildRequires:	pkgconfig(gobject-introspection-1.0)
+BuildRequires:	gettext >= %{gettext_version}
 BuildRequires:	gtk-doc
-BuildRequires:	intltool
 BuildRequires:	krb5-devel
 BuildRequires:	pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
 BuildRequires:	pkgconfig(json-glib-1.0)
@@ -32,10 +33,10 @@ BuildRequires:	pkgconfig(telepathy-glib)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala
 
+Requires:	gettext-libs%{?isa} >= %{gettext_version}
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	libsoup%{?_isa} >= %{libsoup_version}
-Requires:	realmd
 Requires:	webkitgtk4%{?_isa} >= %{webkitgtk4_version}
 
 %description
