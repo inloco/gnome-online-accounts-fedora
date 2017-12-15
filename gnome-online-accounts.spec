@@ -4,8 +4,8 @@
 %global webkitgtk4_version 2.7.2
 
 Name:		gnome-online-accounts
-Version:	3.26.1
-Release:	3%{?dist}
+Version:	3.26.2
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -14,9 +14,6 @@ Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.26/%{name}-%
 
 # https://bugzilla.gnome.org/show_bug.cgi?id=781005
 Patch0:		gnome-online-accounts-remove-the-option-to-preseed-the-providers.patch
-
-# https://bugzilla.gnome.org/show_bug.cgi?id=789187
-Patch1:		gnome-online-accounts-kerberos-fixes.patch
 
 BuildRequires:	autoconf automake libtool
 BuildRequires:	pkgconfig(gcr-3)
@@ -62,7 +59,6 @@ developing applications that use %{name}.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 autoreconf --force --install --verbose
@@ -164,6 +160,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Fri Dec 15 2017 Kalev Lember <klember@redhat.com> - 3.26.2-1
+- Update to 3.26.2
+
 * Tue Nov 07 2017 Debarshi Ray <rishi@fedoraproject.org> - 3.26.1-3
 - Backport fix for adding Fedora Kerberos accounts (GNOME #789187)
 
