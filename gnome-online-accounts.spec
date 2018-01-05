@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.27.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -93,21 +93,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %find_lang %{name}-tpaw
 %endif
 
-%post
-/sbin/ldconfig
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+%post -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-  touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-  gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-fi
-
-%posttrans
-/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+%postun -p /sbin/ldconfig
 
 %if ! 0%{?fedora} && 0%{?rhel} <= 7
 %files -f %{name}.lang -f %{name}-tpaw.lang
@@ -155,6 +143,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/vala/
 
 %changelog
+* Fri Jan 05 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.27.3-2
+- Remove obsolete scriptlets
+
 * Fri Dec 15 2017 Kalev Lember <klember@redhat.com> - 3.27.3-1
 - Update to 3.27.3
 
