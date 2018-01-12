@@ -2,11 +2,11 @@
 %global glib2_version 2.52
 %global gtk3_version 3.19.12
 %global libsoup_version 2.42
-%global webkitgtk4_version 2.12.0
+%global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
 Version:	3.27.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -22,7 +22,7 @@ BuildRequires:	pkgconfig(gobject-introspection-1.0)
 BuildRequires:	gettext >= %{gettext_version}
 BuildRequires:	gtk-doc
 BuildRequires:	krb5-devel
-BuildRequires:	pkgconfig(webkit2gtk-4.0) >= %{webkitgtk4_version}
+BuildRequires:	pkgconfig(webkit2gtk-4.0) >= %{webkit2gtk3_version}
 BuildRequires:	pkgconfig(json-glib-1.0)
 BuildRequires:	pkgconfig(libsecret-1) >= 0.7
 BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
@@ -37,7 +37,7 @@ Requires:	gettext-libs%{?isa} >= %{gettext_version}
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	libsoup%{?_isa} >= %{libsoup_version}
-Requires:	webkitgtk4%{?_isa} >= %{webkitgtk4_version}
+Requires:	webkit2gtk3%{?_isa} >= %{webkit2gtk3_version}
 
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
@@ -143,6 +143,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Fri Jan 12 2018 Tomas Popela <tpopela@redhat.com> - 3.27.3-3
+- Adapt to the webkitgtk4 rename
+
 * Fri Jan 05 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.27.3-2
 - Remove obsolete scriptlets
 
