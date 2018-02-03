@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.27.3
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -93,9 +93,7 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %find_lang %{name}-tpaw
 %endif
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %if ! 0%{?fedora} && 0%{?rhel} <= 7
 %files -f %{name}.lang -f %{name}-tpaw.lang
@@ -143,6 +141,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Sat Feb 03 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.27.3-4
+- Switch to %%ldconfig_scriptlets
+
 * Fri Jan 12 2018 Tomas Popela <tpopela@redhat.com> - 3.27.3-3
 - Adapt to the webkitgtk4 rename
 
