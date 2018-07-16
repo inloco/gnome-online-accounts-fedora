@@ -5,13 +5,13 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.28.0
-Release:	2%{?dist}
+Version:	3.29.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.28/%{name}-%{version}.tar.xz
+Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.29/%{name}-%{version}.tar.xz
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -27,9 +27,6 @@ BuildRequires:	pkgconfig(json-glib-1.0)
 BuildRequires:	pkgconfig(libsecret-1) >= 0.7
 BuildRequires:	pkgconfig(libsoup-2.4) >= %{libsoup_version}
 BuildRequires:	pkgconfig(rest-0.7)
-%if ! 0%{?fedora} && 0%{?rhel} <= 7
-BuildRequires:	pkgconfig(telepathy-glib)
-%endif
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala
 
@@ -63,15 +60,8 @@ developing applications that use %{name}.
   --disable-silent-rules \
   --disable-static \
   --disable-todoist \
-%if ! 0%{?fedora} && 0%{?rhel} <= 7
-  --disable-facebook \
-  --disable-foursquare \
-  --enable-telepathy \
-%else
-  --disable-telepathy \
   --enable-facebook \
   --enable-foursquare \
-%endif
   --enable-exchange \
   --enable-flickr \
   --enable-google \
@@ -89,18 +79,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 
 %find_lang %{name}
 
-%if ! 0%{?fedora} && 0%{?rhel} <= 7
-%find_lang %{name}-tpaw
-%endif
-
 %ldconfig_scriptlets
 
-%if ! 0%{?fedora} && 0%{?rhel} <= 7
-%files -f %{name}.lang -f %{name}-tpaw.lang
-%else
 %files -f %{name}.lang
-%endif
-
 %license COPYING
 %doc COPYING
 %dir %{_libdir}/girepository-1.0
@@ -120,14 +101,6 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/man/man8/goa-daemon.8.gz
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
-%if ! 0%{?fedora} && 0%{?rhel} <= 7
-%{_datadir}/icons/hicolor/*/apps/im-*.png
-%{_datadir}/icons/hicolor/*/apps/im-*.svg
-
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/irc-networks.xml
-%endif
-
 %files devel
 %{_includedir}/goa-1.0/
 %{_libdir}/libgoa-1.0.so
@@ -141,6 +114,10 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Mon Jul 16 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.1-1
+- Update to 3.29.1
+- Drop RHEL 7 compatibility because Telepathy is no longer supported
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.28.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
