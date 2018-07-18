@@ -5,7 +5,7 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.29.1
+Version:	3.29.4
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -60,6 +60,7 @@ developing applications that use %{name}.
   --disable-silent-rules \
   --disable-static \
   --disable-todoist \
+  --enable-documentation \
   --enable-facebook \
   --enable-foursquare \
   --enable-exchange \
@@ -114,6 +115,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Wed Jul 18 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.4-1
+- Update to 3.29.4
+
 * Mon Jul 16 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.1-1
 - Update to 3.29.1
 - Drop RHEL 7 compatibility because Telepathy is no longer supported
