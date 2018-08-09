@@ -98,7 +98,7 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/dbus-1/services/org.gnome.Identity.service
 %{_datadir}/icons/hicolor/*/apps/goa-*.png
-%{_datadir}/man/man8/goa-daemon.8.gz
+%{_datadir}/man/man8/goa-daemon.8*
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
 %files devel
@@ -116,6 +116,7 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %changelog
 * Thu Aug  9 2018 Owen Taylor <otaylor@redhat.com> - 3.29.4-2
 - Remove Requires: gettext-libs - it is extraneous
+- Use a glob for man page, to handle variations in man page compression.
 
 * Wed Jul 18 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.4-1
 - Update to 3.29.4
