@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.29.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -30,7 +30,6 @@ BuildRequires:	pkgconfig(rest-0.7)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala
 
-Requires:	gettext-libs%{?isa} >= %{gettext_version}
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	libsoup%{?_isa} >= %{libsoup_version}
@@ -115,6 +114,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Thu Aug  9 2018 Owen Taylor <otaylor@redhat.com> - 3.29.4-2
+- Remove Requires: gettext-libs - it is extraneous
+
 * Wed Jul 18 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.4-1
 - Update to 3.29.4
 
