@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.28.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -33,7 +33,6 @@ BuildRequires:	pkgconfig(telepathy-glib)
 BuildRequires:	pkgconfig(libxml-2.0)
 BuildRequires:	vala
 
-Requires:	gettext-libs%{?isa} >= %{gettext_version}
 Requires:	glib2%{?_isa} >= %{glib2_version}
 Requires:	gtk3%{?_isa} >= %{gtk3_version}
 Requires:	libsoup%{?_isa} >= %{libsoup_version}
@@ -141,6 +140,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Thu Aug  9 2018 Owen Taylor <otaylor@redhat.com> - 3.28.0-2
+- Remove Requires: gettext-libs - it is extraneous
+
 * Thu Mar 15 2018 Kalev Lember <klember@redhat.com> - 3.28.0-1
 - Update to 3.28.0
 
