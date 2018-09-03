@@ -5,13 +5,13 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.29.91
+Version:	3.30.0
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.29/%{name}-%{version}.tar.xz
+Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.30/%{name}-%{version}.tar.xz
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -56,6 +56,7 @@ developing applications that use %{name}.
 %configure \
   --disable-lastfm \
   --disable-media-server \
+  --disable-pocket \
   --disable-silent-rules \
   --disable-static \
   --disable-todoist \
@@ -69,7 +70,6 @@ developing applications that use %{name}.
   --enable-imap-smtp \
   --enable-kerberos \
   --enable-owncloud \
-  --enable-pocket \
   --enable-windows-live
 %make_build
 
@@ -114,6 +114,10 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Mon Sep 03 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.30.0-1
+- Update to 3.30.0
+- Disable Pocket
+
 * Thu Aug 16 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.29.91-1
 - Update to 3.29.91
 
