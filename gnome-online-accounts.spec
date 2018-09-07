@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.30.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -116,6 +116,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.30.0-3
+- Rebuilt against fixed atk (#1626575)
+
 * Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.30.0-2
 - Fix gtk-doc directory ownership
 
