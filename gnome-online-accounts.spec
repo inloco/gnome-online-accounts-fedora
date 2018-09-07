@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.30.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -109,11 +109,16 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/gir-1.0/Goa-1.0.gir
 %{_libdir}/pkgconfig/goa-1.0.pc
 %{_libdir}/pkgconfig/goa-backend-1.0.pc
+%dir %{_datadir}/gtk-doc
+%dir %{_datadir}/gtk-doc/html
 %{_datadir}/gtk-doc/html/goa/
 %{_libdir}/goa-1.0/include
 %{_datadir}/vala/
 
 %changelog
+* Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.30.0-2
+- Fix gtk-doc directory ownership
+
 * Mon Sep 03 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.30.0-1
 - Update to 3.30.0
 - Disable Pocket
