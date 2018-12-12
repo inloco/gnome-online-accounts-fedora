@@ -5,13 +5,13 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.30.0
-Release:	3%{?dist}
+Version:	3.31.3
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.30/%{name}-%{version}.tar.xz
+Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.31/%{name}-%{version}.tar.xz
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -59,7 +59,6 @@ developing applications that use %{name}.
   --disable-pocket \
   --disable-silent-rules \
   --disable-static \
-  --disable-todoist \
   --enable-documentation \
   --enable-facebook \
   --enable-foursquare \
@@ -116,6 +115,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Wed Dec 12 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.31.3-1
+- Update to 3.31.3
+
 * Fri Sep 07 2018 Kalev Lember <klember@redhat.com> - 3.30.0-3
 - Rebuilt against fixed atk (#1626575)
 
