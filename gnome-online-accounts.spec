@@ -6,12 +6,15 @@
 
 Name:		gnome-online-accounts
 Version:	3.31.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
 Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.31/%{name}-%{version}.tar.xz
+
+# https://pagure.io/fedora-workstation/issue/83
+Patch0:		0001-Remove-Documents-support.patch
 
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
@@ -51,6 +54,7 @@ developing applications that use %{name}.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure \
@@ -115,6 +119,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Mon Dec 17 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.31.3-2
+- Drop the documents integration (fedora-workstation/issue/83)
+
 * Wed Dec 12 2018 Debarshi Ray <rishi@fedoraproject.org> - 3.31.3-1
 - Update to 3.31.3
 

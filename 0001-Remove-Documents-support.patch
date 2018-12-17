@@ -1,0 +1,284 @@
+From 8d4d29d2122887c101e58df6f4c61a3c0f5e3a73 Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Fri, 23 Nov 2018 14:07:09 +0100
+Subject: [PATCH] Remove Documents support
+
+In theory, online integration for documents is still desired. However,
+these days, GNOME Documents is weekly maintained and doesn't receive
+much attention from designers and developers. Therefore, it needs to be
+withdrawn from the set of core applications until the situation
+changes.
+---
+ data/dbus-interfaces.xml                |  3 +++
+ src/goabackend/goabackendenums.h        |  2 +-
+ src/goabackend/goagoogleprovider.c      | 12 ------------
+ src/goabackend/goaobjectskeletonutils.c | 23 -----------------------
+ src/goabackend/goaobjectskeletonutils.h |  3 ---
+ src/goabackend/goaowncloudprovider.c    | 12 ------------
+ src/goabackend/goawindowsliveprovider.c | 17 ++---------------
+ 7 files changed, 6 insertions(+), 66 deletions(-)
+
+diff --git a/data/dbus-interfaces.xml b/data/dbus-interfaces.xml
+index 47a72c9aa07c..db5d6a7b4d58 100644
+--- a/data/dbus-interfaces.xml
++++ b/data/dbus-interfaces.xml
+@@ -654,6 +654,9 @@
+ 
+       An account object implements this interface if it provides
+       documents-like capabilities.
++
++      The #org.gnome.OnlineAccounts.Documents interface is not used
++      by any account.
+   -->
+   <interface name="org.gnome.OnlineAccounts.Documents">
+   </interface>
+diff --git a/src/goabackend/goabackendenums.h b/src/goabackend/goabackendenums.h
+index 58a4d8aba979..5676e1631111 100644
+--- a/src/goabackend/goabackendenums.h
++++ b/src/goabackend/goabackendenums.h
+@@ -63,7 +63,7 @@ typedef enum
+  * @GOA_PROVIDER_FEATURE_CALENDAR: Calendaring services (ie. CalDAV).
+  * @GOA_PROVIDER_FEATURE_CONTACTS: Addressbook services (ie. CardDAV).
+  * @GOA_PROVIDER_FEATURE_CHAT: Instant messaging services (ie. XMPP, IRC).
+- * @GOA_PROVIDER_FEATURE_DOCUMENTS: Documents storage services (ie. Google Documents).
++ * @GOA_PROVIDER_FEATURE_DOCUMENTS: Documents storage services (ie. Google Documents); currently unused.
+  * @GOA_PROVIDER_FEATURE_PHOTOS: Photos storage services (ie. Flickr).
+  * @GOA_PROVIDER_FEATURE_FILES: Files storage services (ie. WebDAV).
+  * @GOA_PROVIDER_FEATURE_TICKETING: Ticketing services (ie. Kerberos).
+diff --git a/src/goabackend/goagoogleprovider.c b/src/goabackend/goagoogleprovider.c
+index cc9a8f891ff7..beaa9ec7f918 100644
+--- a/src/goabackend/goagoogleprovider.c
++++ b/src/goabackend/goagoogleprovider.c
+@@ -69,7 +69,6 @@ get_provider_features (GoaProvider *provider)
+          GOA_PROVIDER_FEATURE_MAIL |
+          GOA_PROVIDER_FEATURE_CALENDAR |
+          GOA_PROVIDER_FEATURE_CONTACTS |
+-         GOA_PROVIDER_FEATURE_DOCUMENTS |
+          GOA_PROVIDER_FEATURE_PHOTOS |
+          GOA_PROVIDER_FEATURE_FILES |
+          GOA_PROVIDER_FEATURE_PRINTERS;
+@@ -280,7 +279,6 @@ build_object (GoaProvider         *provider,
+   gboolean mail_enabled;
+   gboolean calendar_enabled;
+   gboolean contacts_enabled;
+-  gboolean documents_enabled;
+   gboolean files_enabled;
+   gboolean photos_enabled;
+   gboolean printers_enabled;
+@@ -343,10 +341,6 @@ build_object (GoaProvider         *provider,
+                                        contacts_enabled,
+                                        FALSE);
+ 
+-  /* Documents */
+-  documents_enabled = g_key_file_get_boolean (key_file, group, "DocumentsEnabled", NULL);
+-  goa_object_skeleton_attach_documents (object, documents_enabled);
+-
+   /* Photos */
+   photos_enabled = g_key_file_get_boolean (key_file, group, "PhotosEnabled", NULL);
+   goa_object_skeleton_attach_photos (object, photos_enabled);
+@@ -366,7 +360,6 @@ build_object (GoaProvider         *provider,
+       goa_account_set_mail_disabled (account, !mail_enabled);
+       goa_account_set_calendar_disabled (account, !calendar_enabled);
+       goa_account_set_contacts_disabled (account, !contacts_enabled);
+-      goa_account_set_documents_disabled (account, !documents_enabled);
+       goa_account_set_photos_disabled (account, !photos_enabled);
+       goa_account_set_files_disabled (account, !files_enabled);
+       goa_account_set_printers_disabled (account, !printers_enabled);
+@@ -383,10 +376,6 @@ build_object (GoaProvider         *provider,
+                         "notify::contacts-disabled",
+                         G_CALLBACK (goa_util_account_notify_property_cb),
+                         (gpointer) "ContactsEnabled");
+-      g_signal_connect (account,
+-                        "notify::documents-disabled",
+-                        G_CALLBACK (goa_util_account_notify_property_cb),
+-                        (gpointer) "DocumentsEnabled");
+       g_signal_connect (account,
+                         "notify::photos-disabled",
+                         G_CALLBACK (goa_util_account_notify_property_cb),
+@@ -418,7 +407,6 @@ add_account_key_values (GoaOAuth2Provider  *oauth2_provider,
+   g_variant_builder_add (builder, "{ss}", "MailEnabled", "true");
+   g_variant_builder_add (builder, "{ss}", "CalendarEnabled", "true");
+   g_variant_builder_add (builder, "{ss}", "ContactsEnabled", "true");
+-  g_variant_builder_add (builder, "{ss}", "DocumentsEnabled", "true");
+   g_variant_builder_add (builder, "{ss}", "PhotosEnabled", "true");
+   g_variant_builder_add (builder, "{ss}", "FilesEnabled", "true");
+   g_variant_builder_add (builder, "{ss}", "PrintersEnabled", "true");
+diff --git a/src/goabackend/goaobjectskeletonutils.c b/src/goabackend/goaobjectskeletonutils.c
+index e2ec3e73e9b3..783815c79998 100644
+--- a/src/goabackend/goaobjectskeletonutils.c
++++ b/src/goabackend/goaobjectskeletonutils.c
+@@ -109,29 +109,6 @@ goa_object_skeleton_attach_contacts (GoaObjectSkeleton *object,
+   g_clear_object (&contacts);
+ }
+ 
+-void
+-goa_object_skeleton_attach_documents (GoaObjectSkeleton *object,
+-                                      gboolean           documents_enabled)
+-{
+-  GoaDocuments *documents;
+-
+-  documents = goa_object_get_documents (GOA_OBJECT (object));
+-  if (documents_enabled)
+-    {
+-      if (documents == NULL)
+-        {
+-          documents = goa_documents_skeleton_new ();
+-          goa_object_skeleton_set_documents (object, documents);
+-        }
+-    }
+-  else
+-    {
+-      if (documents != NULL)
+-        goa_object_skeleton_set_documents (object, NULL);
+-    }
+-  g_clear_object (&documents);
+-}
+-
+ void
+ goa_object_skeleton_attach_photos (GoaObjectSkeleton *object,
+                                    gboolean           photos_enabled)
+diff --git a/src/goabackend/goaobjectskeletonutils.h b/src/goabackend/goaobjectskeletonutils.h
+index 0ebdb15ee4bd..d6cba50f68ca 100644
+--- a/src/goabackend/goaobjectskeletonutils.h
++++ b/src/goabackend/goaobjectskeletonutils.h
+@@ -38,9 +38,6 @@ void             goa_object_skeleton_attach_contacts       (GoaObjectSkeleton *o
+                                                             gboolean           contacts_enabled,
+                                                             gboolean           accept_ssl_errors);
+ 
+-void             goa_object_skeleton_attach_documents      (GoaObjectSkeleton *object,
+-                                                            gboolean           documents_enabled);
+-
+ void             goa_object_skeleton_attach_files          (GoaObjectSkeleton *object,
+                                                             const gchar       *uri,
+                                                             gboolean           files_enabled,
+diff --git a/src/goabackend/goaowncloudprovider.c b/src/goabackend/goaowncloudprovider.c
+index 65248dd3b688..58107764a6dd 100644
+--- a/src/goabackend/goaowncloudprovider.c
++++ b/src/goabackend/goaowncloudprovider.c
+@@ -72,7 +72,6 @@ get_provider_features (GoaProvider *provider)
+   return GOA_PROVIDER_FEATURE_BRANDED |
+          GOA_PROVIDER_FEATURE_CALENDAR |
+          GOA_PROVIDER_FEATURE_CONTACTS |
+-         GOA_PROVIDER_FEATURE_DOCUMENTS |
+          GOA_PROVIDER_FEATURE_FILES;
+ }
+ 
+@@ -145,7 +144,6 @@ build_object (GoaProvider         *provider,
+   gboolean accept_ssl_errors;
+   gboolean calendar_enabled;
+   gboolean contacts_enabled;
+-  gboolean documents_enabled;
+   gboolean files_enabled;
+   gboolean ret = FALSE;
+   const gchar *identity;
+@@ -196,10 +194,6 @@ build_object (GoaProvider         *provider,
+   goa_object_skeleton_attach_contacts (object, uri_carddav, contacts_enabled, accept_ssl_errors);
+   g_free (uri_carddav);
+ 
+-  /* Documents */
+-  documents_enabled = g_key_file_get_boolean (key_file, group, "DocumentsEnabled", NULL);
+-  goa_object_skeleton_attach_documents (object, documents_enabled);
+-
+   /* Files */
+   files_enabled = g_key_file_get_boolean (key_file, group, "FilesEnabled", NULL);
+   uri_webdav = get_webdav_uri (uri);
+@@ -210,7 +204,6 @@ build_object (GoaProvider         *provider,
+     {
+       goa_account_set_calendar_disabled (account, !calendar_enabled);
+       goa_account_set_contacts_disabled (account, !contacts_enabled);
+-      goa_account_set_documents_disabled (account, !documents_enabled);
+       goa_account_set_files_disabled (account, !files_enabled);
+ 
+       g_signal_connect (account,
+@@ -221,10 +214,6 @@ build_object (GoaProvider         *provider,
+                         "notify::contacts-disabled",
+                         G_CALLBACK (goa_util_account_notify_property_cb),
+                         (gpointer) "ContactsEnabled");
+-      g_signal_connect (account,
+-                        "notify::documents-disabled",
+-                        G_CALLBACK (goa_util_account_notify_property_cb),
+-                        (gpointer) "DocumentsEnabled");
+       g_signal_connect (account,
+                         "notify::files-disabled",
+                         G_CALLBACK (goa_util_account_notify_property_cb),
+@@ -752,7 +741,6 @@ add_account (GoaProvider    *provider,
+   g_variant_builder_init (&details, G_VARIANT_TYPE ("a{ss}"));
+   g_variant_builder_add (&details, "{ss}", "CalendarEnabled", "true");
+   g_variant_builder_add (&details, "{ss}", "ContactsEnabled", "true");
+-  g_variant_builder_add (&details, "{ss}", "DocumentsEnabled", "true");
+   g_variant_builder_add (&details, "{ss}", "FilesEnabled", "true");
+   g_variant_builder_add (&details, "{ss}", "Uri", uri);
+   g_variant_builder_add (&details, "{ss}", "AcceptSslErrors", (accept_ssl_errors) ? "true" : "false");
+diff --git a/src/goabackend/goawindowsliveprovider.c b/src/goabackend/goawindowsliveprovider.c
+index 10c2dcff4738..be357465230a 100644
+--- a/src/goabackend/goawindowsliveprovider.c
++++ b/src/goabackend/goawindowsliveprovider.c
+@@ -73,8 +73,7 @@ static GoaProviderFeatures
+ get_provider_features (GoaProvider *provider)
+ {
+   return GOA_PROVIDER_FEATURE_BRANDED |
+-         GOA_PROVIDER_FEATURE_MAIL |
+-         GOA_PROVIDER_FEATURE_DOCUMENTS;
++         GOA_PROVIDER_FEATURE_MAIL;
+ }
+ 
+ static const gchar *
+@@ -102,14 +101,13 @@ get_scope (GoaOAuth2Provider *oauth2_provider)
+ {
+   return "wl.imap,"
+          "wl.offline_access,"
+-         "wl.skydrive_update,"
+          "wl.emails";
+ }
+ 
+ static guint
+ get_credentials_generation (GoaProvider *provider)
+ {
+-  return 3;
++  return 4;
+ }
+ 
+ static const gchar *
+@@ -276,7 +274,6 @@ build_object (GoaProvider         *provider,
+   GoaAccount *account = NULL;
+   GoaMail *mail = NULL;
+   gboolean mail_enabled;
+-  gboolean documents_enabled;
+   gboolean ret = FALSE;
+   const gchar *email_address;
+ 
+@@ -323,23 +320,14 @@ build_object (GoaProvider         *provider,
+         goa_object_skeleton_set_mail (object, NULL);
+     }
+ 
+-  /* Documents */
+-  documents_enabled = g_key_file_get_boolean (key_file, group, "DocumentsEnabled", NULL);
+-  goa_object_skeleton_attach_documents (object, documents_enabled);
+-
+   if (just_added)
+     {
+       goa_account_set_mail_disabled (account, !mail_enabled);
+-      goa_account_set_documents_disabled (account, !documents_enabled);
+ 
+       g_signal_connect (account,
+                         "notify::mail-disabled",
+                         G_CALLBACK (goa_util_account_notify_property_cb),
+                         (gpointer) "MailEnabled");
+-      g_signal_connect (account,
+-                        "notify::documents-disabled",
+-                        G_CALLBACK (goa_util_account_notify_property_cb),
+-                        (gpointer) "DocumentsEnabled");
+     }
+ 
+   ret = TRUE;
+@@ -357,7 +345,6 @@ add_account_key_values (GoaOAuth2Provider *oauth2_provider,
+                         GVariantBuilder   *builder)
+ {
+   g_variant_builder_add (builder, "{ss}", "MailEnabled", "true");
+-  g_variant_builder_add (builder, "{ss}", "DocumentsEnabled", "true");
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+-- 
+2.19.2
+
