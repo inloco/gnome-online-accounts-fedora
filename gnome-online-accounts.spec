@@ -5,8 +5,8 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.28.0
-Release:	2%{?dist}
+Version:	3.28.1
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -140,6 +140,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Thu Jan 17 2019 Debarshi Ray <rishi@fedoraproject.org> - 3.28.1-1
+- Update to 3.28.1
+
 * Thu Aug  9 2018 Owen Taylor <otaylor@redhat.com> - 3.28.0-2
 - Remove Requires: gettext-libs - it is extraneous
 - Use a glob for man page, to handle variations in man page compression.
