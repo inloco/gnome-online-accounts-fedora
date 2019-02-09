@@ -5,8 +5,8 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.31.3
-Release:	3%{?dist}
+Version:	3.31.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -100,7 +100,7 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_prefix}/libexec/goa-identity-service
 %{_datadir}/dbus-1/services/org.gnome.OnlineAccounts.service
 %{_datadir}/dbus-1/services/org.gnome.Identity.service
-%{_datadir}/icons/hicolor/*/apps/goa-*.png
+%{_datadir}/icons/hicolor/*/apps/goa-*.svg
 %{_datadir}/man/man8/goa-daemon.8*
 %{_datadir}/glib-2.0/schemas/org.gnome.online-accounts.gschema.xml
 
@@ -119,6 +119,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Sat Feb 09 2019 Debarshi Ray <rishi@fedoraproject.org> - 3.31.90-1
+- Update to 3.31.90
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.31.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
