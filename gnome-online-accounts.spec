@@ -5,13 +5,13 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.31.90
+Version:	3.32.0
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
 URL:		https://wiki.gnome.org/Projects/GnomeOnlineAccounts
-Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.31/%{name}-%{version}.tar.xz
+Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.32/%{name}-%{version}.tar.xz
 
 # https://pagure.io/fedora-workstation/issue/83
 Patch0:		0001-Remove-Documents-support.patch
@@ -119,6 +119,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Fri Mar 29 2019 Kalev Lember <klember@redhat.com> - 3.32.0-1
+- Update to 3.32.0
+
 * Sat Feb 09 2019 Debarshi Ray <rishi@fedoraproject.org> - 3.31.90-1
 - Update to 3.31.90
 
