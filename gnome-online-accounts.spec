@@ -5,7 +5,7 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.33.91
+Version:	3.33.92
 Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
@@ -120,6 +120,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Tue Sep 03 2019 Kalev Lember <klember@redhat.com> - 3.33.92-1
+- Update to 3.33.92
+
 * Wed Aug 21 2019 Debarshi Ray <rishi@fedoraproject.org> - 3.33.91-1
 - Update to 3.33.91
 
