@@ -6,7 +6,7 @@
 
 Name:		gnome-online-accounts
 Version:	3.35.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -120,6 +120,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.35.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Sat Jan 04 2020 Debarshi Ray <rishi@fedoraproject.org> - 3.35.3-1
 - Update to 3.35.3
 
