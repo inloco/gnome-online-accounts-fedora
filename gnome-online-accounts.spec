@@ -5,8 +5,8 @@
 %global webkit2gtk3_version 2.12.0
 
 Name:		gnome-online-accounts
-Version:	3.35.3
-Release:	2%{?dist}
+Version:	3.35.90
+Release:	1%{?dist}
 Summary:	Single sign-on framework for GNOME
 
 License:	LGPLv2+
@@ -120,6 +120,9 @@ find $RPM_BUILD_ROOT -name '*.la' -delete
 %{_datadir}/vala/
 
 %changelog
+* Tue Feb 11 2020 Kalev Lember <klember@redhat.com> - 3.35.90-1
+- Update to 3.35.90
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.35.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
