@@ -41,7 +41,7 @@ Requires:	webkit2gtk3%{?_isa} >= %{webkit2gtk3_version}
 %description
 GNOME Online Accounts provides interfaces so that applications and libraries
 in GNOME can access the user's online accounts. It has providers for Google,
-ownCloud, Facebook, Flickr, Foursquare, Microsoft Account, Pocket, Microsoft
+Nextcloud, Facebook, Flickr, Foursquare, Microsoft Account, Microsoft
 Exchange, IMAP/SMTP and Kerberos.
 
 %package devel
@@ -60,7 +60,6 @@ developing applications that use %{name}.
 %configure \
   --disable-lastfm \
   --disable-media-server \
-  --disable-pocket \
   --disable-silent-rules \
   --disable-static \
   --enable-documentation \
