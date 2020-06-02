@@ -1,0 +1,87 @@
+From 6ab57910c06e10071e5839d449d6cf179938d987 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pedro=20To=CC=82rres?= <t0rr3sp3dr0@gmail.com>
+Date: Tue, 2 Jun 2020 20:36:37 -0300
+Subject: [PATCH] identity: Fix on_kerberos_inquiry Deadlock
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Pedro Tôrres <t0rr3sp3dr0@gmail.com>
+---
+ src/goaidentity/goakerberosidentity.c        | 45 +++++++++++---------
+ src/goaidentity/goakerberosidentityinquiry.c |  1 -
+ 2 files changed, 26 insertions(+), 20 deletions(-)
+
+diff --git a/src/goaidentity/goakerberosidentity.c b/src/goaidentity/goakerberosidentity.c
+index 5398885b..7be165c0 100644
+--- a/src/goaidentity/goakerberosidentity.c
++++ b/src/goaidentity/goakerberosidentity.c
+@@ -1048,27 +1048,34 @@ on_kerberos_inquiry (krb5_context      kerberos_context,
+   GoaIdentityInquiry *inquiry;
+   krb5_error_code error_code;
+ 
+-  inquiry = goa_kerberos_identity_inquiry_new (operation->identity,
+-                                               name,
+-                                               banner,
+-                                               prompts,
+-                                               number_of_prompts);
+-
+-  operation->inquiry_func (inquiry,
+-                           operation->cancellable,
+-                           operation->inquiry_data);
+-
+-  if (goa_identity_inquiry_is_failed (inquiry))
+-    error_code = KRB5_LIBOS_CANTREADPWD;
+-  else if (!goa_identity_inquiry_is_complete (inquiry))
+-    g_cancellable_cancel (operation->cancellable);
++  if (number_of_prompts > 0)
++    {
++      inquiry = goa_kerberos_identity_inquiry_new (operation->identity,
++                                                  name,
++                                                  banner,
++                                                  prompts,
++                                                  number_of_prompts);
++
++      operation->inquiry_func (inquiry,
++                              operation->cancellable,
++                              operation->inquiry_data);
++
++      if (goa_identity_inquiry_is_failed (inquiry))
++        error_code = KRB5_LIBOS_CANTREADPWD;
++      else if (!goa_identity_inquiry_is_complete (inquiry))
++        g_cancellable_cancel (operation->cancellable);
++
++      if (g_cancellable_is_cancelled (operation->cancellable))
++        error_code = KRB5_LIBOS_PWDINTR;
++      else
++        error_code = 0;
+ 
+-  if (g_cancellable_is_cancelled (operation->cancellable))
+-    error_code = KRB5_LIBOS_PWDINTR;
++      g_object_unref (inquiry);
++    }
+   else
+-    error_code = 0;
+-
+-  g_object_unref (inquiry);
++    {
++        error_code = 0;
++    }
+ 
+   return error_code;
+ }
+diff --git a/src/goaidentity/goakerberosidentityinquiry.c b/src/goaidentity/goakerberosidentityinquiry.c
+index 42d52c5b..9961a80d 100644
+--- a/src/goaidentity/goakerberosidentityinquiry.c
++++ b/src/goaidentity/goakerberosidentityinquiry.c
+@@ -146,7 +146,6 @@ goa_kerberos_identity_inquiry_new (GoaKerberosIdentity * identity,
+   int i;
+ 
+   g_return_val_if_fail (GOA_IS_KERBEROS_IDENTITY (identity), NULL);
+-  g_return_val_if_fail (number_of_prompts > 0, NULL);
+ 
+   object = g_object_new (GOA_TYPE_KERBEROS_IDENTITY_INQUIRY, NULL);
+ 
+-- 
+2.24.3 (Apple Git-128)
+

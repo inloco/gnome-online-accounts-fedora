@@ -16,6 +16,9 @@ Source0:	https://download.gnome.org/sources/gnome-online-accounts/3.36/%{name}-%
 # https://pagure.io/fedora-workstation/issue/83
 Patch0:		0001-Remove-Documents-support.patch
 
+# https://gitlab.gnome.org/GNOME/gnome-online-accounts/-/issues/92
+Patch1:		0002-identity-Fix-on_kerberos_inquiry-Deadlock.patch
+
 BuildRequires:	pkgconfig(gcr-3)
 BuildRequires:	pkgconfig(gio-2.0) >= %{glib2_version}
 BuildRequires:	pkgconfig(glib-2.0) >= %{glib2_version}
@@ -55,6 +58,7 @@ developing applications that use %{name}.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
